@@ -1,0 +1,51 @@
+<include file="include/head" />
+<body bgcolor="#f2f2f2">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/ever/css/common(1).css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/ever/css/app(1).css">
+<div class="red-page-header">
+	<i class="iconfont icon-back" style="float: left;" onClick="javascript :history.back(-1);"></i>
+	<h3>{$_CFG['site']['name']} - {$name}</h3>
+</div>
+<style>
+.bo_qbls_div11{background-color: #fff;width:94%; background:#FFF; margin:3%; border-radius: 1rem;}
+.f_r{ float:right}
+.zjjl_div {width: 100%;}
+.zjjl_div li{ float:left; width:94%; background:#FFF; padding:3%; margin:0 3%; border-bottom:1px solid #eee;text-align:left; line-height:20px;clear: both;}
+.zjjl_div li .div_sj{ font-size:12px; color:#c5c5c5;}
+.zjjl_div li .div_je{ color:#ff2e45; font-size:14px;}
+</style>
+<div class="bo_qbls_div11">
+    <ul class="zjjl_div" id="list" style="display:inline-block; "></ul>
+	<div class="blank"></div>
+</div>
+<div id="backtop">
+	<i class="iconfont icon-fold"></i>
+</div>
+<link rel="stylesheet" href="__PUBLIC__/layer/skin/layer.css">
+<script src="__HJS__/jquery-1.10.1.min.js"></script>
+<script src="__PUBLIC__/layer_mobile/layer.js"></script>
+<script src="__HJS__/common.js"></script>
+<script type="text/javascript">
+var page = 1;
+var html = false;
+var status = "{$parent}";
+var uid = "{$uid}";
+var type = "{$type}";
+loadTeam();
+$('.zl_select_span span').click(function(){
+	$(this).addClass('active');
+	$(this).siblings().removeClass("active");
+	status = $(this).attr('status');
+	p=1;
+	$('#list').html('');
+	loadTeam();
+});
+//加载评论
+function loadTeam(){
+	AjaxLoad("{:U('Mh/getMoney')}",{page:page,status:status,uid:uid,type:type},$('#list'),html,loadTeam);
+}
+</script>
+<div id="backtop"><i class="iconfont icon-fold"></i></div>
+<include file="include/share2" />
+</body>
+</html>

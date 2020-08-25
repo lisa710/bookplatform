@@ -1,0 +1,86 @@
+<include file="include/head" />
+<body bgcolor="#f2f2f2">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/ever/css/common(1).css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/ever/css/app(1).css">
+	<div class="red-page-header">
+	<i class="iconfont icon-back" style="float: left;" onClick="javascript:window.location.href='/index.php?m=&c=Mh&a=my'"></i>
+	<h3>{$_CFG['site']['name']} - 我的客户</h3>
+</div>
+<style>
+#div_nav{box-sizing: border-box; text-align:center; height:40px; background:#fff; border-bottom:2px solid #d7d7d7;}
+#div_nav ul { height: 40px; position: relative; width: 100%;box-sizing: border-box; z-index:0;}
+#div_nav li { color: #1a1a1a; cursor: pointer; float: left; font-size: 15px; height: 40px; text-align: center; line-height:38px; }
+#div_nav li .active { color: #ff2e45 !important;}
+#div_nav .activeborder { background: #ff2e45; bottom: 0; height: 2px;left: 0; position: absolute; transition: left 0.2s ease 0s; z-index: 10;}
+#div_nav2{box-sizing: border-box; text-align:center; height:40px; background:#fff; border-bottom:2px solid #d7d7d7;}
+#div_nav2 ul { height: 40px; position: relative; width: 100%;box-sizing: border-box; z-index:0;}
+#div_nav2 li { color: #1a1a1a; cursor: pointer; float: left; font-size: 15px; height: 40px; text-align: center; line-height:38px; }
+#div_nav2 li .active { color: #ff2e45;}
+#div_nav2 .activeborder { background: #ff2e45; bottom: 0; height: 2px;left: 0; position: absolute; transition: left 0.2s ease 0s; z-index: 10;}
+.lgli_db{ position:relative;  max-width: 640px;    min-width: 300px; 
+    width: 100%;    z-index:999; }
+.lgli_qh li,.lgli_qh .activeborder{ width:33.33%;}
+.sgli_qh li,.sgli_qh .activeborder{ width:33.33%;}
+.sygli_qh li,.sygli_qh .activeborder{ width:25%;}
+.zzsj_div1{ background:#fff;}
+.syrm_ul{ height:30px;border-bottom: 1px solid #ebebeb;  border-left: 4px solid #e4393c ; line-height: 30px;}
+.syrm_ul li { float: right; text-align: center; width: 23%;}
+.syrm_ul li{ float:right; width:33%; text-align:center;}
+.syrm_ul li a{ display:block; width:100%;}
+.syrm_ul li.no a{ background:#CCC; color:#FFF;}
+.fxrs{background:#ccc}
+.fxrs p{width:49%;float:left;text-align:center;background:#fff;line-height: 190%; padding:5px;}
+
+.imgzsy{background-size:contain;-moz-background-size:contain;-webkit-background-size:contain; background-position:center center; background-repeat:no-repeat;}
+
+.fjd_footer{ background:#fff; margin-left:5px; margin-right:5px; padding-top:5px; padding-bottom:5px; text-align:center; color: #666; font-size: 12px; line-height: 28px; margin-bottom:10px;}
+
+</style>
+<div id="div_nav" class="lgli_qh lgli_db">
+   <ul>
+     <li><a href="/index.php?m=&c=Mh&a=myTeam&parent=parent1" <if condition="$parent eq 'parent1'">class="active"</if>>一级会员</a></li>
+     <li><a href="/index.php?m=&c=Mh&a=myTeam&parent=parent2" <if condition="$parent eq 'parent2'">class="active"</if>>二级会员</a></li>
+     <li><a href="/index.php?m=&c=Mh&a=myTeam&parent=parent3" <if condition="$parent eq 'parent3'">class="active"</if>>三级会员</a></li>
+     <div class="activeborder" <if condition="$parent eq 'parent1'">style="left: 0%;"</if>
+     <if condition="$parent eq 'parent2'">style="left: 33.33%;"</if>
+     <if condition="$parent eq 'parent3'">style="left: 66.66%;"</if>></div>
+  </ul>
+</div>
+<div class="zzsj_div">
+    <div class="fxrs">
+        <a href="/index.php?m=&c=Mh&a=myMoney&type=1&parent={$parent}"><p style="margin-right:1%;">总消费<br/>{$m1}</p></a>
+        <a href="/index.php?m=&c=Mh&a=myMoney&type=2&parent={$parent}"><p>总佣金<br/>{$m2}</p></a>
+    </div>
+</div>
+<div class="level_content" style="margin-top:70px;">
+    <ul id="list"></ul>
+</div>
+<div id="backtop">
+	<i class="iconfont icon-fold"></i>
+</div>
+<link rel="stylesheet" href="__PUBLIC__/layer/skin/layer.css">
+<script src="__HJS__/jquery-1.10.1.min.js"></script>
+<script src="__PUBLIC__/layer_mobile/layer.js"></script>
+<script src="__HJS__/common.js"></script>
+<script type="text/javascript">
+var page = 1;
+html = false;
+status="{$parent}";
+loadTeam();
+$('.zl_select_span span').click(function(){
+	$(this).addClass('active');
+	$(this).siblings().removeClass("active");
+	status = $(this).attr('status');
+	p=1;
+	$('#list').html('');
+	loadTeam();
+});
+//加载评论
+function loadTeam(){
+	AjaxLoad("{:U('Mh/getTeam')}",{page:page,status:status},$('#list'),html,loadTeam);
+}
+</script>
+<div id="backtop"><i class="iconfont icon-fold"></i></div>
+<include file="include/share2" />
+</body>
+</html>

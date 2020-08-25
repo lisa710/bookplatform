@@ -1,0 +1,53 @@
+<style>
+.swiper-no{
+    padding: 20px 0 20px 0;
+    min-height: 50px;
+    line-height: 10px;
+    background-color: #fff;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #93899E;
+    margin: 0 auto;
+}
+</style>
+<if condition="$list">
+<foreach name="list" item="v">
+<if condition="$type eq 1">
+		<li>
+          <span class="f_l">类型：{:get_finance_action($v[action])}</span>
+          <span class="f_r div_sj"><span class="div_je">{$v.money}</span></span>
+          <div class="blank" style="height:0px;"></div>
+          <span class="f_l div_sj">{:date('Y-m-d H:i:s',$v[create_time])}</span>
+          <span class="f_r div_sj">来源:{$v.nickname}<br></span>
+          <div class="blank" style="height:0px;"></div>
+        </li>
+<else/>
+		<li>
+          <span class="f_l">类型：获得分佣</span>
+          <span class="f_r div_sj"><span class="div_je">+{$v.money}</span></span>
+          <div class="blank" style="height:0px;"></div>
+          <span class="f_l div_sj">{:date('Y-m-d H:i:s',$v[create_time])}</span>
+          <span class="f_r div_sj">来源:{$v.nickname}<br></span>
+          <div class="blank" style="height:0px;"></div>
+        </li>
+</if>
+</foreach>
+<else />
+	<if condition="$page eq 1">
+	<div class="swiper-s">
+		<div class="swiper-no">
+			<img src="__HIMAGE__/empty.png" />
+		</div>
+		<div class="swiper-no">
+			nothing...
+		</div>
+	 </div>
+	<else />
+	<div class="swiper-ss" id="common-load">
+		<div class="swiper-no">
+			已经加载完数据！
+		</div>
+	</div>
+	</if>
+</if>
