@@ -144,7 +144,7 @@ function getOrderType($type){
 	return $return;
 }          
 
-// 根据代理等级获取等级名称
+// 根据作者等级获取等级名称
 function get_level_name($level=''){
 	if(!$config){
 		$config = $GLOBALS['_CFG']['level'];
@@ -158,7 +158,7 @@ function get_level_name($level=''){
 	return $arr[$level];
 }
 
-// 根据代理等级获取等级名称
+// 根据作者等级获取等级名称
 function get_lv_name($lv=''){
 	if(!$config){
 		$config = $GLOBALS['_CFG']['lv'];
@@ -172,7 +172,7 @@ function get_lv_name($lv=''){
 	return $arr[$lv];
 }
 
-//获取合伙人和代理总称
+//获取合伙人和作者总称
 function get_level_lv_name($level='',$lv=''){
 	if(!$level && !$lv){
 		$string = '普通会员';
@@ -367,7 +367,7 @@ function get_separate_status($status){
 function get_separate_type($type){
 	$type_str = '';
 	switch($type){
-		case 'lv': $type_str = '代理分成'; break;
+		case 'lv': $type_str = '作者分成'; break;
 		case 'level': $type_str = '合伙人分成'; break;
 		default : $type_str = '未知状态';
 	}
@@ -519,10 +519,10 @@ function separate($order){
 		$parent_info = $user -> find($user_info['parent'.$i]);
 		
 		if(!$parent_info){
-			break; // 这级别代理都木有就没有在上一级了，直接跳出循环
+			break; // 这级别作者都木有就没有在上一级了，直接跳出循环
 		}
 		
-		//若上级合伙人或代理级别都没有则不分成
+		//若上级合伙人或作者级别都没有则不分成
 		if($parent_info['level']<1&&$parent_info['lv']<1){
 			continue;
 		}
@@ -587,7 +587,7 @@ function upUser($order){
 
 
 /**
- * 获取惟一代理盐值
+ * 获取惟一作者盐值
  * @return string
  */
 //生成唯一用户uid
@@ -607,7 +607,7 @@ function Salt() {
 
 
 
-//根据购买额度更改代理等级
+//根据购买额度更改作者等级
 function upLv($user){
 	if(!is_array($user)){
 		$user = M('user')->find(intval($user));

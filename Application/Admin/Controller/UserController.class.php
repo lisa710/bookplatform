@@ -80,7 +80,7 @@ class UserController extends AdminController {
 		}
 	}
 	
-	// 校准下级代理数
+	// 校准下级作者数
 	public function correct_agent(){
 		$user_id = intval($_GET['id']);
 		$agent1 = M('user') -> where('parent1='.$user_id) -> count();

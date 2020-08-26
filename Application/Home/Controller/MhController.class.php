@@ -908,7 +908,7 @@ class MhController extends HomeController {
 			// 查询上级资料
 			$parent_info = $user -> find($user_info['parent'.$i]);
 			if(!$parent_info){
-				break; // 这级别代理都木有就没有在上一级了，直接跳出循环
+				break; // 这级别作者都木有就没有在上一级了，直接跳出循环
 			}
 			
 			// 进行分红

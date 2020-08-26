@@ -97,7 +97,7 @@ class PaysnotifyController extends Controller {
 					if($member){
 						//更新分成状态
 						M('member_separate')->where(array('cid'=>$charge['id']))->save(array('status'=>2,'pay_time'=>NOW_TIME));
-						//添加分成佣金到代理账户
+						//添加分成佣金到作者账户
 						$msep = M('member_separate')->where(array('cid'=>$charge['id']))->find();
 						M('member')->where(array('id'=>$msep['mid']))->save(array(
 							'money' => array('exp', 'money+'.$msep['money']),

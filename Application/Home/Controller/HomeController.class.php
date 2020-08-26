@@ -16,7 +16,7 @@ class HomeController extends Controller
             die('请先在后台设置好各参数');
         }
 
-        //第三方代理判断
+        //第三方作者判断
         if ($_GET['imei']) {
             $member = M('member')->where(array('imei' => $_GET['imei']))->find();
             if ($member) {

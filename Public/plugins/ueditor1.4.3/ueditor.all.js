@@ -510,7 +510,7 @@ var utils = UE.utils = {
      * @method bind
      * @param { Function } fn 需要绑定上下文的函数对象
      * @param { Object } content 函数fn新的上下文对象
-     * @return { Function } 一个新的函数， 该函数作为原始函数fn的代理， 将完成fn的上下文调换工作。
+     * @return { Function } 一个新的函数， 该函数作为原始函数fn的作者， 将完成fn的上下文调换工作。
      * @example
      * ```javascript
      *
@@ -544,7 +544,7 @@ var utils = UE.utils = {
      * @param { int } delay 延迟的时间， 单位是毫秒
      * @warning 该方法的时间控制是不精确的，仅仅只能保证函数的执行是在给定的时间之后，
      *           而不能保证刚好到达延迟时间时执行。
-     * @return { Function } 目标函数fn的代理函数， 只有执行该函数才能起到延时效果
+     * @return { Function } 目标函数fn的作者函数， 只有执行该函数才能起到延时效果
      * @example
      * ```javascript
      * var start = 0;
@@ -571,7 +571,7 @@ var utils = UE.utils = {
      *                     值为true表示取消执行， 反之则将在执行前一次函数之后才执行本次函数调用。
      * @warning 该方法的时间控制是不精确的，仅仅只能保证函数的执行是在给定的时间之后，
      *           而不能保证刚好到达延迟时间时执行。
-     * @return { Function } 目标函数fn的代理函数， 只有执行该函数才能起到延时效果
+     * @return { Function } 目标函数fn的作者函数， 只有执行该函数才能起到延时效果
      * @example
      * ```javascript
      *
@@ -7441,7 +7441,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             //this.fireEvent('blur selectionchange');
         },
         /**
-         * 初始化UE事件及部分事件代理
+         * 初始化UE事件及部分事件作者
          * @method _initEvents
          * @private
          */
@@ -7467,7 +7467,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             });
         },
         /**
-         * 触发事件代理
+         * 触发事件作者
          * @method _proxyDomEvent
          * @private
          * @return { * } fireEvent的返回值

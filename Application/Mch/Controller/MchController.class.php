@@ -15,7 +15,7 @@ class MchController extends AdminController {
     }
 	
 	
-	//代理提现
+	//作者提现
 	public function withdraw(){
 		if(IS_POST){
 			$_GET = $_REQUEST;

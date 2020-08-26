@@ -18,7 +18,7 @@ class MemberController extends AdminController {
 		if(IS_POST){
 			if(!$_POST['id']){
 				if(M('member')->where(array('mobile'=>$_POST['mobile']))->find()){
-					$this->error('代理手机号码已被添加');
+					$this->error('作者手机号码已被添加');
 					exit;
 				}
 				$_POST['salt'] = Salt();

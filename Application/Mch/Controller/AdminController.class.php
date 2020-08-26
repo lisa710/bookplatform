@@ -29,7 +29,7 @@ class AdminController extends Controller {
 		$this->mch = session('mch');
 		$this->assign('mch',$this->mch);
 		
-		//代理中心域名
+		//作者中心域名
 		$this->assign('murl',"http://".$_SERVER['HTTP_HOST'].__ROOT__."/index.php?m=&imei=".$this->mch['imei']);
     }
 	

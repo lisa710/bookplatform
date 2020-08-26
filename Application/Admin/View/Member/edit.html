@@ -1,7 +1,7 @@
 
         <div class="pageheader notab">
-            <h1 class="pagetitle">编辑代理内容</h1>
-            <span class="pagedesc">请认真编辑代理的各项信息</span>
+            <h1 class="pagetitle">编辑作者信息</h1>
+            <span class="pagedesc">请认真编辑作者的各项信息</span>
             
         </div><!--pageheader-->
         
@@ -10,7 +10,7 @@
         
             <form class="stdform stdform2" method="post">
 				<p>
-					<label>代理平台名称</label>
+					<label>作者平台名称</label>
 					<span class="field"><input type="text" name="name" id="name" value="{$info.name}" class="smallinput" /></span>
 				</p>
 				<p>
@@ -18,11 +18,11 @@
 					<span class="field"><input type="text" name="separate" id="separate" value="{$info.separate}" class="smallinput" /></span>
 				</p>
 			<!-- 	<p>
-					<label>会员充值扣除比例<small>会员充值书币扣除代理端比例（包括充值记录和分成）</small></label>
+					<label>会员充值扣除比例<small>会员充值书币扣除作者端比例（包括充值记录和分成）</small></label>
 					<span class="field"><input type="text" name="declv" id="declv" value="{$info.declv}" class="smallinput" /></span>
 				</p> -->
 				<p>
-					<label>会员充值扣除比例<small>会员充值书币扣除代理端比例（包括充值记录和分成）</small></label>
+					<label>会员充值扣除比例<small>会员充值书币扣除作者端比例（包括充值记录和分成）</small></label>
 					<span class="field">
 							<!--<input type="text" name="declv" id="declv" value="{$info.declv}" class="smallinput" style="width: 20%" />-->
 						<input type="text" name="deductions_s" id="deductions_s" value="1" class="smallinput" style="width: 10%;background:#ddd;" readonly />&nbsp; ：&nbsp;
@@ -30,15 +30,15 @@
 					</span>
 				</p>
 				<p>
-					<label>代理账号</label>
+					<label>作者账号</label>
 					<span class="field"><input type="text" name="username" id="username" value="{$info.username}" class="smallinput" /></span>
 				</p>
 				<p>
-					<label>代理支付宝账号</label>
+					<label>作者支付宝账号</label>
 					<span class="field"><input type="text" name="zfb" id="zfb" value="{$info.zfb}" class="smallinput" /></span>
 				</p>
 				<p>
-					<label>代理手机号</label>
+					<label>作者手机号</label>
 					<span class="field"><input type="text" name="mobile" id="mobile" value="{$info.mobile}" class="smallinput" /></span>
 				</p>
 				<p>
@@ -48,32 +48,32 @@
 				
 				<if condition="$info">
 					<p>
-						<label>代理漫画地址</label>
+						<label>作者漫画地址</label>
 						<span class="field"><input type="text" value="{$info.url}" class="smallinput" readonly style="background:#ddd;" /></span>
 					</p>
 					<p>
-						<label>代理小说地址</label>
+						<label>作者小说地址</label>
 						<span class="field"><input type="text" value="{$murl}&c=Book&a=index&imei={$info.imei}" class="smallinput" readonly style="background:#ddd;" /></span>
 					</p>
 					<p>
-						<label>代理书架地址</label>
+						<label>作者书架地址</label>
 						<span class="field"><input type="text" value="{$murl}&c=Mh&a=book_shelf&imei={$info.imei}" class="smallinput" readonly style="background:#ddd;" /></span>
 					</p>
 					<p>
-						<label>代理中心地址</label>
+						<label>作者中心地址</label>
 						<span class="field"><input type="text" value="{$murl}&c=Mh&a=my&imei={$info.imei}" class="smallinput" readonly style="background:#ddd;" /></span>
 					</p>
 					<p>
-						<label>代理充值地址</label>
+						<label>作者充值地址</label>
 						<span class="field"><input type="text" value="{$murl}&c=Mh&a=pay&imei={$info.imei}" class="smallinput" readonly style="background:#ddd;" /></span>
 					</p>
 					<p>
-						<label>代理阅读历史地址</label>
+						<label>作者阅读历史地址</label>
 						<span class="field"><input type="text" value="{$murl}&c=Mh&a=book_recent_read&imei={$info.imei}" class="smallinput" readonly style="background:#ddd;" /></span>
 					</p>
 				</if>
 				<p>
-					<label>代理公众号二维码</label>
+					<label>作者公众号二维码</label>
 					<span class="field">
 						<iframe src="{:U('upload', 'event=setPic&url='.$info['gqrcode'])}" scrolling="no" width="100" height="100"></iframe>
 						<input type="hidden" name="gqrcode" id="gqrcode" value="{$_CFG['site']['gqrcode']}" class="smallinput" />

@@ -59,17 +59,17 @@ class tplmsg{
 					'value' => $info['title'],
 					'color' => '#ea4a17',
 				),
-				// 代理姓名
+				// 作者姓名
 				'keyword1' => array(
 					'value' => $info['name'],
 					'color' => '#666666',
 				),
-				// 代理微信				
+				// 作者微信
 				'keyword2' => array(
 					'value' => $info['mobile'],
 					'color' => '#666666',
 				),
-				// 代理手机				
+				// 作者手机
 				'keyword3' => array(
 					'value' => $info['mobile'],
 					'color' => '#666666',

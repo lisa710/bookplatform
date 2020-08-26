@@ -93,7 +93,7 @@
 					<!--li><a href="<?php echo U('Finance/pay');?>">一键转账</a></li-->
 					<!--li><a href="<?php echo U('Finance/deposit_log');?>">转账记录</a></li-->
 					<li><a href="<?php echo U('Finance/finance_log');?>">用户账户变动记录</a></li>
-					<li><a href="<?php echo U('Finance/separate_log');?>">代理佣金分成记录</a></li>					
+					<li><a href="<?php echo U('Finance/separate_log');?>">作者佣金分成记录</a></li>
 					<!--li><a href="<?php echo U('Finance/mch_pay_log');?>">转账记录</a></li--->
                 </ul>
             </li>
@@ -132,7 +132,7 @@
 			<li>
 				<a href="<?php echo U('Member/index');?>">
 					<span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
-					<span class="text">代理管理</span>
+					<span class="text">作者后台</span>
 				</a>
             </li>
 			

@@ -529,7 +529,7 @@ class WxPayApi
 		//设置超时
 		curl_setopt($ch, CURLOPT_TIMEOUT, $second);
 		
-		//如果有配置代理这里就设置代理
+		//如果有配置作者这里就设置作者
 		if(WxPayConfig::CURL_PROXY_HOST != "0.0.0.0" 
 			&& WxPayConfig::CURL_PROXY_PORT != 0){
 			curl_setopt($ch,CURLOPT_PROXY, WxPayConfig::CURL_PROXY_HOST);

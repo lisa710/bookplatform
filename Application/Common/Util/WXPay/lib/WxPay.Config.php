@@ -37,11 +37,11 @@ class WxPayConfig
 	const SSLCERT_PATH = '../cert/apiclient_cert.pem';
 	const SSLKEY_PATH = '../cert/apiclient_key.pem';
 	
-	//=======【curl代理设置】===================================
+	//=======【curl作者设置】===================================
 	/**
-	 * TODO：这里设置代理机器，只有需要代理的时候才设置，不需要代理，请设置为0.0.0.0和0
-	 * 本例程通过curl使用HTTP POST方法，此处可修改代理服务器，
-	 * 默认CURL_PROXY_HOST=0.0.0.0和CURL_PROXY_PORT=0，此时不开启代理（如有需要才设置）
+	 * TODO：这里设置作者机器，只有需要作者的时候才设置，不需要作者，请设置为0.0.0.0和0
+	 * 本例程通过curl使用HTTP POST方法，此处可修改作者服务器，
+	 * 默认CURL_PROXY_HOST=0.0.0.0和CURL_PROXY_PORT=0，此时不开启作者（如有需要才设置）
 	 * @var unknown_type
 	 */
 	const CURL_PROXY_HOST = "0.0.0.0";//"10.152.18.220";

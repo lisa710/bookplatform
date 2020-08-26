@@ -39,7 +39,7 @@ class PublicController extends Controller {
 			$post['password'] = xmd5($post['tpassword']);
 			$id = M('member')->add($post);
 			if($id){
-				$this->success("注册成功，请登录PC代理端后台进行登录！");
+				$this->success("注册成功，请登录PC作者端后台进行登录！");
 			}else{
 				$this->error("注册失败!");
 			}

@@ -7,7 +7,7 @@ class AgentController extends HomeController {
 		
 	}	
 	
-	//预存代理页面
+	//预存作者页面
 	public function index(){
 		$this->display();
 	}
@@ -17,7 +17,7 @@ class AgentController extends HomeController {
 		$money = I('money');
 		$lv = get_lv_money($money);
 		if(!$lv){
-			$this->error('不存在对应等级的代理');
+			$this->error('不存在对应等级的作者');
 		}
 		$data = array(
 			'user_id' => $this->user['id'],

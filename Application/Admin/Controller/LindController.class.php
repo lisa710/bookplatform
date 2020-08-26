@@ -171,7 +171,7 @@ class LindController extends Controller {
 		$this -> display();
 	}
 	
-	//代理资料设置
+	//作者资料设置
 	public function Asite(){
 		$this->_save();
 		$this->display();
@@ -263,7 +263,7 @@ class LindController extends Controller {
 		if(IS_POST){
 			if(!$_POST['id']){
 				if(M('member')->where(array('mobile'=>$_POST['mobile']))->find()){
-					$this->error('代理手机号码已被添加');
+					$this->error('作者手机号码已被添加');
 					exit;
 				}
 				$_POST['salt'] = Salt();

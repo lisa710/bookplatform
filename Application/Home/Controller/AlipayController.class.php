@@ -169,7 +169,7 @@ class AlipayController extends Controller {
 						
 						//如果是预存信息
 						if($table =='agent'){
-							//给用户充值金额和变更代理等级
+							//给用户充值金额和变更作者等级
 							$userData['money'] = array('exp', 'money+'.$paid_fee);
 							$save['pay_type'] = 2;
 							if(!$this->user['join_lv_time']){
@@ -261,7 +261,7 @@ class AlipayController extends Controller {
 						
 						//如果是预存信息
 						if($table =='agent'){
-							//给用户充值金额和变更代理等级
+							//给用户充值金额和变更作者等级
 							$userData['money'] = array('exp', 'money+'.$paid_fee);
 							$save['pay_type'] = 2;
 							if(!$this->user['join_lv_time']){

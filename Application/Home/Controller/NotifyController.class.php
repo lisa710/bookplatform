@@ -80,7 +80,7 @@ class NotifyController extends Controller {
 			
 			//如果是预存信息
 			if($type =='agent'){
-				//给用户充值金额和变更代理等级
+				//给用户充值金额和变更作者等级
 				$userData['money'] = array('exp', 'money+'.$paid_fee);
 				if(!$this->user['join_lv_time']){
 					$userData['join_lv_time'] = time();
@@ -167,7 +167,7 @@ class NotifyController extends Controller {
 						}		
 					}	
 					*/
-					//添加分成佣金到代理账户
+					//添加分成佣金到作者账户
 					$msep = M('member_separate')->where(array('cid'=>$order_info['id']))->find();
 					M('member')->where(array('id'=>$msep['mid']))->save(array(
 						'money' => array('exp', 'money+'.$msep['money']),
