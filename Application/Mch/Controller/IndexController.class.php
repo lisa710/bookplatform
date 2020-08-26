@@ -2,6 +2,7 @@
 
 namespace Mch\Controller;
 
+use Admin\Controller\MemberController;
 use Think\Controller;
 
 class IndexController extends AdminController
@@ -50,26 +51,10 @@ class IndexController extends AdminController
     // 注册
     public function signUp()
     {
-        if (IS_POST) {
-            if (empty($_POST['user']) || empty($_POST['pass'])) {
-                $this->assign('errmsg', '账号密码不能为空！');
-            }
+        if(IS_POST){
+            $con = new MemberController();
+            $con->fn_save_info();
         }
-        if(M('member')->where(array('mobile'=>$_POST['mobile']))->find()){
-            $this->error('代理手机号码已被添加');
-            exit;
-        }
-        $data['salt'] = Salt();
-        $_POST['imei'] = xmd5($_POST['salt']);
-        $_POST['create_time'] = NOW_TIME;
-
-        $qrcode = $this->qrcode($_POST['imei']);
-        $_POST['url'] = $qrcode['url'];
-        $_POST['qrcode'] = $qrcode['qrcode'];
-        $_POST['password'] = xmd5($_POST['tpassword']);
-
-        print_r(Salt());die;
-        M('member')->add($_POST);
 
         $this->display();
     }
