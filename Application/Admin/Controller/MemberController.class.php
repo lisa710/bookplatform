@@ -50,6 +50,7 @@ class MemberController extends AdminController
             $_POST['salt'] = Salt();
             $_POST['imei'] = xmd5($_POST['salt']);
             $_POST['create_time'] = NOW_TIME;
+            $_POST['status'] = 1;//启用账号
 
             $qrcode = $this->qrcode($_POST['imei']);
             $_POST['url'] = $qrcode['url'];

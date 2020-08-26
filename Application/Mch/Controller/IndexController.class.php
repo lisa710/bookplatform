@@ -54,9 +54,11 @@ class IndexController extends AdminController
         if(IS_POST){
             $con = new MemberController();
             $con->fn_save_info();
+            $this->success('操作成功！', U('index'));
+            exit;
         }
-
         $this->display();
+
     }
 
     //  退出
