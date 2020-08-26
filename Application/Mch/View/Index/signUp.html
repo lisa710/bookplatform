@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>作者登录页面_{$_CFG.site.name}</title>
+<title>代理登录页面_{$_CFG.site.name}</title>
 <link rel="stylesheet" href="__PUBLIC__/admin/css/style.default.css" type="text/css" />
 <script type="text/javascript" src="__PUBLIC__/admin/js/plugins/jquery-1.7.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/admin/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
@@ -29,7 +29,7 @@
         	
             <div class="logo">
             	<h1 class="logo">efucms<span>小说漫画</span></h1>
-				<span class="slogan">作者后台系统</span>
+				<span class="slogan">代理管理系统</span>
             </div><!--logo-->
             
             <br clear="all" /><br />
@@ -40,7 +40,7 @@
 			</div><!--nousername-->
 			</notempty>
             
-            <form id="login" method="post">
+            <form id="signUp" method="post">
             	
                 <div class="username">
                 	<div class="usernameinner">
@@ -54,12 +54,12 @@
                     </div>
                 </div>
                 
-                <button>登录</button>
-                
-                <div class="keep"><input type="checkbox" name="remember" value="1" /> 记住用户名</div>
-            
+                <button>注册</button>
+
+                <div class="keep"></div>
+
             </form>
-            <a href="{:U('Index/signUp')}" class="sign-up"  style="position: absolute;right: 20px;bottom: 20px;color: #f08323;cursor: pointer;">注册</a>
+            <a href="{:U('Index/login')}" class="sign-up"  style="position: absolute;right: 20px;bottom: 20px;color: #f08323;cursor: pointer;">登录</a>
         </div><!--loginboxinner-->
     </div><!--loginbox-->
 
