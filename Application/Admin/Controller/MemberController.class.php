@@ -42,6 +42,32 @@ class MemberController extends AdminController
         foreach ($_POST as &$v) {
             $v = trim($v);
         }
+
+        if (empty($_POST['name'])) {
+            $this->error('平台名称不能为空');
+            exit;
+        }
+
+        if (empty($_POST['username'])) {
+            $this->error('用户名不能为空');
+            exit;
+        }
+
+        if (empty($_POST['mobile'])) {
+            $this->error('手机号码不能为空');
+            exit;
+        }
+
+        if (empty($_POST['tpassword'])) {
+            $this->error('密码不能为空');
+            exit;
+        }
+
+        if(preg_match("/^1[34578]\d{9}$/", $_POST['mobile'])){
+            $this->error('手机号码格式不正确');
+            exit;
+        }
+
         if (!$_POST['id']) {
             if (M('member')->where(array('mobile' => $_POST['mobile']))->find()) {
                 $this->error('作者手机号码已被添加');
