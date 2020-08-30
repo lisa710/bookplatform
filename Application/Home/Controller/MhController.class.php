@@ -42,12 +42,21 @@ class MhController extends HomeController
 
     public function index()
     {
+        $member_id = M('follow')->where(['user_id' => $this->user['id']])->select();
+        $member_id_arr = [];
+        foreach ($member_id as $vm) {
+            $member_id_arr[] = $vm['member_id'];
+        }
+        $where['member_id'] = array('in', $member_id_arr);
+
         $mhcate = [];
         foreach ($this->_w_opus as $k => $v) {
             if ($v['show'] == 2 && $v['isshow']) {
+                $mh_list = M('mh_list')->where($where)->order('sort desc')->select();
+                $book_list = M('book')->where($where)->order('sort desc')->select();
                 $mhcate[$k]['name'] = $v['name'];
                 $mhcate[$k]['sort'] = $v['sort'];
-                $mhcate[$k]['list'] = M('mh_list')->order('sort desc')->select() + M('book')->order('sort desc')->select();
+                $mhcate[$k]['list'] = array_merge($mh_list, $book_list);
             }
         }
         $this->assign('mhcate', $mhcate);
