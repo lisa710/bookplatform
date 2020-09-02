@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>管理后台</title>
+<title>管理dfdfdf后台</title>
 <link rel="stylesheet" href="/Public/admin/css/style.default.css" type="text/css" />
 <link rel="stylesheet" href="/Public/plugins/bootstrap/css/bootstrap.font.css" type="text/css" />
 <link rel="shortcut icon" href="favicon.ico" />
@@ -87,13 +87,13 @@
 				</a>
             	<span class="arrow"></span>
             	<ul id="finance">
-				    <li><a href="<?php echo U('Withdraw/index');?>">用户提现管理</a></li>
-				    <li><a href="<?php echo U('Charge/index');?>">用户充值记录</a></li>
-					<li><a href="<?php echo U('Finance/share');?>">用户分享获币记录</a></li>
+				    <li><a href="<?php echo U('Withdraw/index');?>">作者提现申请管理</a></li>
+				    <li><a href="<?php echo U('Charge/index');?>">读者购买记录</a></li>
+<!--					<li><a href="<?php echo U('Finance/share');?>">用户分享获币记录</a></li>-->
 					<!--li><a href="<?php echo U('Finance/pay');?>">一键转账</a></li-->
 					<!--li><a href="<?php echo U('Finance/deposit_log');?>">转账记录</a></li-->
-					<li><a href="<?php echo U('Finance/finance_log');?>">用户账户变动记录</a></li>
-					<li><a href="<?php echo U('Finance/separate_log');?>">作者佣金分成记录</a></li>
+<!--					<li><a href="<?php echo U('Finance/finance_log');?>">用户账户变动记录</a></li>-->
+<!--					<li><a href="<?php echo U('Finance/separate_log');?>">作者佣金分成记录</a></li>-->
 					<!--li><a href="<?php echo U('Finance/mch_pay_log');?>">转账记录</a></li--->
                 </ul>
             </li>
@@ -108,9 +108,10 @@
 				
 				<span class="arrow"></span>
 				<ul id="user">
-					<li><a href="<?php echo U('User/index');?>">用户信息管理</a></li>
-					<li><a href="<?php echo U('Report/index');?>">用户新增报表</a></li>
-					<li><a href="<?php echo U('Tree/index');?>">用户树形关系</a></li>
+					<li><a href="<?php echo U('User/index');?>">读者信息管理</a></li>
+					<li><a href="<?php echo U('Report/index');?>">读者新增报表</a></li>
+<!--					<li><a href="<?php echo U('Tree/index');?>">用户树形关系</a></li>-->
+					<li><a href="<?php echo U('Member/index');?>">作者后台</a></li>
                 </ul>
 				
             </li>
@@ -129,12 +130,12 @@
 			
 			
 			
-			<li>
-				<a href="<?php echo U('Member/index');?>">
-					<span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
-					<span class="text">作者后台</span>
-				</a>
-            </li>
+<!--			<li>-->
+<!--				<a href="<?php echo U('Member/index');?>">-->
+<!--					<span class="glyphicon glyphicon-eur" aria-hidden="true"></span>-->
+<!--					<span class="text">作者后台</span>-->
+<!--				</a>-->
+<!--            </li>-->
 			
 			
 			<li>

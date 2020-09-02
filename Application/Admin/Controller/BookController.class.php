@@ -19,84 +19,84 @@ class BookController extends AdminController {
 	}
 	
 	// 编辑、添加小说
-	public function edit(){
-		if(IS_POST){
-			$cateids = implode(',', $_POST['arrcateids']);
-			unset($_POST['arrcateids']);
-			$_POST['cateids'] = $cateids;
-			
-			$bookcate = implode(',', $_POST['bookcate']);
-			unset($_POST['bookcate']);
-			$_POST['bookcate'] = $bookcate;
-			
-			// 修改
-			if(isset($_GET['id'])){
-				$_POST['update_time'] = NOW_TIME;
-				$rs = M('book') -> where('id='.intval($_GET['id'])) -> save($_POST);
-		
-				$product_id = intval($_GET['id']);
-				$this->success('操作成功！');
-			}else{
-				$_POST['create_time'] = NOW_TIME;
-				$_POST['update_time'] = NOW_TIME;
-				$rs = M('book') -> add($_POST);
-				$product_id = $rs;
-				
-				//若上传了分集压缩包
-				if(!empty($_FILES['cert'])){
-					 $upload = new \Think\Upload();
-					 $upload->maxSize   =     200*1024*1024 ;
-					 $upload->exts      =     array('zip','rar');
-					 $upload->rootPath  =     './Public/xiaoshuo/';
-					 $upload->savePath  =     xmd5(time().rand()).'/';
-					 $upload ->autoSub = false;
-					 $info   =   $upload->upload();
-					 if($info){
-						$info = $info['cert'];
-						// 解压
-						$path = $upload->rootPath . $info['savepath'];
-						$file = $path . $info['savename'];
-						if(file_exists($file)){
-							// 打开压缩文件
-							$zip = new \ZipArchive();
-							$rs = $zip -> open($file);
-							if($rs && $zip -> extractTo($path)){
-								$zip -> close();
-								//解压完成之后删除
-								unlink($file);
-								$_POST['cert'] = $path;
-							}else{
-								$this -> error('解压失败!');
-							}
-						}else{
-							$this -> error('系统没找到上传的文件');
-						}
-					}else {
-						$this -> error('上传错误');
-					}
-					$this->addEpisodes($path,$product_id);
-					$this -> success('操作成功！', U('index'));
-					exit;
-				}
-			}
-			
-			exit;
-		}
-		
-		if(intval($_GET['id'])>0) {
-			$info = M('book') -> find($_GET['id']);
-			$cateids = $info['cateids'];
-			$arrcateids = explode(',', $cateids);
-			$bookcate = explode(",",$info['bookcate']);
-			$asdata = array(
-					'info'			=> $info,
-					'arrcateids'	=> $arrcateids,
-					'bookcate'		=> $bookcate,
-			);
-			$this -> assign($asdata);
-		}
-		$this -> display();
-	}
+    public function edit()
+    {
+        if (IS_POST) {
+            $cateids = implode(',', $_POST['arrcateids']);
+            unset($_POST['arrcateids']);
+            $_POST['cateids'] = $cateids;
+
+            $bookcate = implode(',', $_POST['bookcate']);
+            unset($_POST['bookcate']);
+            $_POST['bookcate'] = $bookcate;
+
+            // 修改
+            if (isset($_GET['id'])) {
+                $_POST['update_time'] = NOW_TIME;
+                $rs                   = M('book')->where('id=' . intval($_GET['id']))->save($_POST);
+
+                $product_id = intval($_GET['id']);
+                $this->success('操作成功！');
+            } else {
+                $_POST['create_time'] = NOW_TIME;
+                $_POST['update_time'] = NOW_TIME;
+                //若上传了分集压缩包
+                if (!empty($_FILES['cert']['name'])) {
+                    $upload           = new \Think\Upload();
+                    $upload->maxSize  = 200 * 1024 * 1024;
+                    $upload->exts     = array('zip', 'rar');
+                    $upload->rootPath = './Public/xiaoshuo/';
+                    $upload->savePath = xmd5(time() . rand()) . '/';
+                    $upload->autoSub  = false;
+                    $info             = $upload->upload();
+                    if ($info) {
+                        $info = $info['cert'];
+                        // 解压
+                        $path = $upload->rootPath . $info['savepath'];
+                        $file = $path . $info['savename'];
+                        if (file_exists($file)) {
+                            // 打开压缩文件
+                            $zip = new \ZipArchive();
+                            $rs  = $zip->open($file);
+                            if ($rs && $zip->extractTo($path)) {
+                                $zip->close();
+                                //解压完成之后删除
+                                unlink($file);
+                                $_POST['cert'] = $path;
+                            } else {
+                                $this->error('解压失败!');
+                            }
+                        } else {
+                            $this->error('系统没找到上传的文件');
+                        }
+                    } else {
+                        $this->error('上传错误');
+                    }
+                }
+                $rs         = M('book')->add($_POST);
+                $product_id = $rs;
+                $this->addEpisodes($path, $product_id);
+                $this->success('操作成功！', U('index'));
+                exit;
+            }
+
+            exit;
+        }
+
+        if (intval($_GET['id']) > 0) {
+            $info       = M('book')->find($_GET['id']);
+            $cateids    = $info['cateids'];
+            $arrcateids = explode(',', $cateids);
+            $bookcate   = explode(",", $info['bookcate']);
+            $asdata     = array(
+                'info'       => $info,
+                'arrcateids' => $arrcateids,
+                'bookcate'   => $bookcate,
+            );
+            $this->assign($asdata);
+        }
+        $this->display();
+    }
 	
 	public function addEpisodes($path,$bid){
 		$temp = array();

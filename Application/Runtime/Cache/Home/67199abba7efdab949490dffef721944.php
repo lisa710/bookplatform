@@ -89,7 +89,7 @@
 .item_cate{
 	width: 1.333rem;
     height: 1.333rem;
-}	
+}
 </style>
 <div class="banner-bottom">
     <img src="/Public/home/mhimages/home-banner-bottom.png">
@@ -107,51 +107,58 @@
 <?php if(is_array($mhcate)): foreach($mhcate as $k=>$v): if($v['list']): ?><div class="bm-box mt-10">
 		<div class="head">
 			<div class="title dot"><?php echo ($v["name"]); ?></div>
-			<div class="pull-right">
-				<a href="<?php echo U('Mh/mhlist',array('cate'=>$k));?>&parent=<?php echo ($user["id"]); ?>">
-					更多 <svg width="7" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 24">
-					<title>right-arrow</title>
-					<path d="M1.91 1.93L12.06 12 1.91 22" fill="none" stroke="#ff5420" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
-				</a>
-			</div>
+<!--			<div class="pull-right">-->
+<!--				<a href="<?php echo U('Mh/mhlist',array('cate'=>$k));?>&parent=<?php echo ($user["id"]); ?>">-->
+<!--					更多 <svg width="7" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 24">-->
+<!--					<title>right-arrow</title>-->
+<!--					<path d="M1.91 1.93L12.06 12 1.91 22" fill="none" stroke="#ff5420" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>-->
+<!--				</a>-->
+<!--			</div>-->
 		</div>
 		<div class="books-row">
 			<?php if(is_array($v['list'])): $i = 0; $__LIST__ = $v['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?><div class="item">
-				<a href="<?php echo U('Mh/bookinfo');?>&mhid=<?php echo ($vo["id"]); ?>&parent=<?php echo ($user["id"]); ?>">
+                <?php if(isset($vo['mhcate'])): ?><a href="<?php echo U('Mh/bookinfo');?>&mhid=<?php echo ($vo["id"]); ?>&parent=<?php echo ($user["id"]); ?>">
+                <?php else: ?>
+                    <a href="<?php echo U('Book/bookinfo');?>&bid=<?php echo ($vo["id"]); ?>&parent=<?php echo ($user["id"]); ?>"><?php endif; ?>
 					<img class="lazy" src="<?php echo ($vo["cover_pic"]); ?>" data-original="<?php echo ($vo["cover_pic"]); ?>" style="width:110px;height:146px;" />
 					<div class="title"><?php echo ($vo["title"]); ?></div>
-					<div class="text">更新至<?php echo ($vo["episodes"]); ?>话</div>
+					<div class="text">更新至<?php echo ($vo["episodes"]); if(isset($vo['mhcate'])): ?>话<?php else: ?>章<?php endif; ?></div>
 				</a>
 			</div><?php endforeach; endif; else: echo "" ;endif; ?>
+
 		</div>
 	</div><?php endif; endforeach; endif; ?>
 
 <style>
 
 </style>
-<?php if($mf): ?><div class="bm-box mt-10">
-	<div class="head">
-		<div class="title dot">免费专区</div>
-		<div class="pull-right">
-			<a href="<?php echo U('Mh/book_free',array('parent'=>$user[id]));?>">
-				更多 <svg width="7" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 24">
-				<title>right-arrow</title>
-				<path d="M1.91 1.93L12.06 12 1.91 22" fill="none" stroke="#ff5420" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
-			</a>
-		</div>
-	</div>
-	<div class="books-row">
-		<?php if(is_array($mf)): $i = 0; $__LIST__ = $mf;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?><div style="width:100%;padding-bottom: 20px;border-bottom: 1px solid #ddd;position:relative;">
-				<img src="<?php echo ($vo["cover_pic"]); ?>" data-original="<?php echo ($vo["cover_pic"]); ?>" style="width:88px;height:110px;float:left;margin:10px;" />
-				<div class="title" style="margin-top: 15px;font-size: 17px;color: #000;"><?php echo ($vo["title"]); ?></div>
-				<div class="text" style="margin-top: 5px;font-size: 14px;color: #666666;"><?php echo ($vo["author"]); ?></div>
-				<div class="text" style="margin-top: 5px;font-size: 14px;color: #666666;height:40px;text-overflow: ellipsis;overflow: hidden; word-wrap: break-word;word-break: break-all;"><?php echo ($vo["summary"]); ?></div>
-				<div onclick="location.href=&#39;<?php echo U('Mh/bookinfo');?>&mhid=<?php echo ($vo["id"]); ?>&#39;" style="position: absolute;top: 10px;right: 10px;padding: 8px;border: 1px solid #FF9800;border-radius: 5px;color: #FF9800;">立即阅读</div>
-			</div><?php endforeach; endif; else: echo "" ;endif; ?>
-	</div>
-</div>
-<?php else: ?>
-	<div style="margin:10px 0;width:100%;border:1px solid #eeeeee"></div><?php endif; ?>
+<!--<?php if($mf): ?>-->
+<!--<div class="bm-box mt-10">-->
+<!--	<div class="head">-->
+<!--		<div class="title dot">免费专区</div>-->
+<!--		<div class="pull-right">-->
+<!--			<a href="<?php echo U('Mh/book_free',array('parent'=>$user[id]));?>">-->
+<!--				更多 <svg width="7" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 24">-->
+<!--				<title>right-arrow</title>-->
+<!--				<path d="M1.91 1.93L12.06 12 1.91 22" fill="none" stroke="#ff5420" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>-->
+<!--			</a>-->
+<!--		</div>-->
+<!--	</div>-->
+<!--	<div class="books-row">-->
+<!--		<?php if(is_array($mf)): $i = 0; $__LIST__ = $mf;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>-->
+<!--			<div style="width:100%;padding-bottom: 20px;border-bottom: 1px solid #ddd;position:relative;">-->
+<!--				<img src="<?php echo ($vo["cover_pic"]); ?>" data-original="<?php echo ($vo["cover_pic"]); ?>" style="width:88px;height:110px;float:left;margin:10px;" />-->
+<!--				<div class="title" style="margin-top: 15px;font-size: 17px;color: #000;"><?php echo ($vo["title"]); ?></div>-->
+<!--				<div class="text" style="margin-top: 5px;font-size: 14px;color: #666666;"><?php echo ($vo["author"]); ?></div>-->
+<!--				<div class="text" style="margin-top: 5px;font-size: 14px;color: #666666;height:40px;text-overflow: ellipsis;overflow: hidden; word-wrap: break-word;word-break: break-all;"><?php echo ($vo["summary"]); ?></div>-->
+<!--				<div onclick="location.href=&#39;<?php echo U('Mh/bookinfo');?>&mhid=<?php echo ($vo["id"]); ?>&#39;" style="position: absolute;top: 10px;right: 10px;padding: 8px;border: 1px solid #FF9800;border-radius: 5px;color: #FF9800;">立即阅读</div>-->
+<!--			</div>-->
+<!--<?php endforeach; endif; else: echo "" ;endif; ?>-->
+<!--	</div>-->
+<!--</div>-->
+<!--<?php else: ?>-->
+	<div style="margin:10px 0;width:100%;border:1px solid #eeeeee"></div>
+<!--<?php endif; ?>-->
 <div style="width:200px;height:200px;margin:20px auto 60px auto">
 	<?php if($member['gqrcode']): ?><img src="<?php echo ($member['gqrcode']); ?>" style="width:100%;height:100%;" />
 	<?php else: ?>
@@ -169,11 +176,11 @@
                 <i class="icon-book"></i><div class="title">必看视频</div>
             </a>
         </div> -->
-        <div class="item">
-            <a href="<?php echo U('Mh/book_shelf',array('parent'=>$user[id]));?>">
-                <i class="icon-book"></i><div class="title">书架</div>
-            </a>
-        </div>
+<!--        <div class="item">-->
+<!--            <a href="<?php echo U('Mh/book_shelf',array('parent'=>$user[id]));?>">-->
+<!--                <i class="icon-book"></i><div class="title">书架h</div>-->
+<!--            </a>-->
+<!--        </div>-->
         <div class="item">
             <a href="<?php echo U('Mh/index',array('parent'=>$user[id]));?>" class="active">
                 <i class="icon-home"></i><div class="title">首页</div>
@@ -197,7 +204,7 @@
             autoplay: true,
             autoplaySpeed: 3000,
             adaptiveHeight: true
-        });  
+        });
     });
 </script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
