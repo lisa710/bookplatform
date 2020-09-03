@@ -1,2 +1,2 @@
 *.log
-Public/Runtime/*
+Application/Runtime/*
