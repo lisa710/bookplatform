@@ -18,8 +18,8 @@ class ApiCommonController extends Controller
         }
 
         foreach ($config as $v) {
-            $key = '_' . $v['name'];
-            $this->{$key} = unserialize($v['value']);
+            $key              = '_' . $v['name'];
+            $this->{$key}     = unserialize($v['value']);
             $_CFG[$v['name']] = $this->{$key};
         }
     }
@@ -35,6 +35,10 @@ class ApiCommonController extends Controller
                 $member_id_arr[] = $vm['member_id'];
             }
             $where['member_id'] = array('in', $member_id_arr);
+
+            if (!empty($_REQUEST['title'])) {
+                $where['title'] = array('like', '%' . trim($_REQUEST['title']) . '%');
+            }
             
             foreach ($this->_w_opus as $k => $v) {
                 if ($v['show'] == 2 && $v['isshow']) {

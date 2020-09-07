@@ -402,6 +402,12 @@ class MhController extends HomeController
         }
         M('mh_list')->where("id={$mhid}")->setInc('reader', 1);
 
+        $rlog = M('rlog')->where(array(
+            "rid" => $mhid,
+            "user_id" => $this->user['id'],
+            "type" => 'mh',
+        ))->order('create_time desc')->find();
+
         $tag = 2; //未收藏
         $lock = 1; //1锁 2不锁
         if (session('user.id') > 0) {
@@ -433,8 +439,11 @@ class MhController extends HomeController
             $huas_num = range(1, $huas);
         }
 
+
+
         $asdata = array(
             'info' => $info,
+            'rlog' => $rlog['ji_no'],
             'arr_catename' => $arr_catename,
             'first' => $first,
             'huas' => $huas_num,
@@ -479,8 +488,16 @@ class MhController extends HomeController
                 "user_id" => $this->user['id'],
                 "ji_no" => $ji_no,
                 "type" => 'mh',
+                "create_time" => time(),
             ));
             M('mh_episodes')->where(array('mhid' => $mhid, 'ji_no' => $ji_no))->setInc('readnums', 1);
+        }else{
+            M('rlog')->where(array(
+                "rid" => $mhid,
+                "user_id" => $this->user['id'],
+                "ji_no" => $ji_no,
+                "type" => 'mh',
+            ))->setField('create_time',time());
         }
 
         $mhinfo = M('mh_list')->where("id={$mhid}")->find();
