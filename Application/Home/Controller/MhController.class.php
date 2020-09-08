@@ -402,7 +402,7 @@ class MhController extends HomeController
         }
         M('mh_list')->where("id={$mhid}")->setInc('reader', 1);
 
-        $rlog = M('rlog')->where(array(
+        $read = M('read')->where(array(
             "rid" => $mhid,
             "user_id" => $this->user['id'],
             "type" => 'mh',
@@ -443,7 +443,7 @@ class MhController extends HomeController
 
         $asdata = array(
             'info' => $info,
-            'rlog' => $rlog['ji_no'],
+            'read' => $read['episodes'],
             'arr_catename' => $arr_catename,
             'first' => $first,
             'huas' => $huas_num,
@@ -488,16 +488,8 @@ class MhController extends HomeController
                 "user_id" => $this->user['id'],
                 "ji_no" => $ji_no,
                 "type" => 'mh',
-                "create_time" => time(),
             ));
             M('mh_episodes')->where(array('mhid' => $mhid, 'ji_no' => $ji_no))->setInc('readnums', 1);
-        }else{
-            M('rlog')->where(array(
-                "rid" => $mhid,
-                "user_id" => $this->user['id'],
-                "ji_no" => $ji_no,
-                "type" => 'mh',
-            ))->setField('create_time',time());
         }
 
         $mhinfo = M('mh_list')->where("id={$mhid}")->find();
@@ -560,6 +552,13 @@ class MhController extends HomeController
                 'create_time' => NOW_TIME,
                 'type' => 'mh',
             ));
+        }else{
+            M('read')->where(array(
+                "rid" => $mhid,
+                "user_id" => $this->user['id'],
+                "episodes" => $ji_no,
+                "type" => 'mh',
+            ))->setField('create_time',time());
         }
 
 

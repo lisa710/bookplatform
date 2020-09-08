@@ -105,7 +105,7 @@
     <div class="list" id="html_box">
     <volist name="huas" id="vo">
 	<?php 
-		$money = M('book_episodes')->where(array('ji_no'=>$vo,'mhid'=>$info['id']))->getField('money');
+		$money = M('book_episodes')->where(array('ji_no'=>$vo,'bid'=>$info['id']))->getField('money');
 		if(!$money || $money<=0){
 			$money = $_site['xsmoney'];
 		}
@@ -202,7 +202,11 @@
             <span class="title">{$first['title']}</span>
         </div>
         <div class="action">
-            <a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no=1&parent={$user.id}" class="btn">开始阅读</a>
+			<notempty name="read">
+				<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$read}&parent={$user.id}" class="btn">继续阅读</a>
+				<else>
+					<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no=1&parent={$user.id}" class="btn">开始阅读</a>
+			</notempty>
         </div>
     </div>
 </div>
