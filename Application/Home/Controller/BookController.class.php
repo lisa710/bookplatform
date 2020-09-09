@@ -81,9 +81,14 @@ class BookController extends HomeController
                 !empty($cateid) && $arr_catename[] = get_mh_cate_name($cateid);
             }
         }
-        $first = M('book_episodes')->where("bid={$bid}")->order('ji_no asc')->find();
+        if (empty($read['episodes'])) {
+            $first = M('book_episodes')->where("bid={$bid}")->order('ji_no asc')->find();
+        } else {
+            $first = M('book_episodes')->where("bid={$bid} AND ji_no={$read['episodes']}")->find();
+        }
 
         $huas = M('book_episodes')->where(array('bid' => $bid))->count();
+
         if ($huas > 15) {
             $huas_num = range(1, 15);
         } else {
@@ -92,7 +97,7 @@ class BookController extends HomeController
 
         $asdata = array(
             'info'         => $info,
-            'read'         => $read['episodes'],
+            'read_log'     => $read['episodes'],
             'arr_catename' => $arr_catename,
             'first'        => $first,
             'huas'         => $huas_num,
@@ -574,7 +579,11 @@ class BookController extends HomeController
                     }
 
                     $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '话';
-                    $html .= '<span>' . $money . '书币</span>';
+                    if($read){
+                        $html .= '<span style="color: #ccc">' . $money . '书币</span>';
+                    }else{
+                        $html .= '<span>' . $money . '书币</span>';
+                    }
                     $html .= '</a>';
                     $html .= '</div>';
                 } else {
@@ -596,7 +605,11 @@ class BookController extends HomeController
                     }
 
                     $html .= '<a href="' . U('Book/inforedit', array('bid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '章';
-                    $html .= '<span>' . $money . '书币</span>';
+                    if($read){
+                        $html .= '<span style="color: #ccc">' . $money . '书币</span>';
+                    }else{
+                        $html .= '<span>' . $money . '书币</span>';
+                    }
                     $html .= '</a>';
                     $html .= '</div>';
                 }

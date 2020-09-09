@@ -430,7 +430,12 @@ class MhController extends HomeController
                 !empty($cateid) && $arr_catename[] = get_mh_cate_name($cateid);
             }
         }
-        $first = M('mh_episodes')->where("mhid={$mhid}")->order('ji_no asc')->find();
+
+        if(empty($read['episodes'])){
+            $first = M('mh_episodes')->where("mhid={$mhid}")->order('ji_no asc')->find();
+        }else{
+            $first = M('mh_episodes')->where("mhid={$mhid} AND ji_no={$read['episodes']}")->find();
+        }
 
         $huas = M('mh_episodes')->where(array('mhid' => $mhid))->count();
         if ($huas > 15) {
@@ -443,14 +448,13 @@ class MhController extends HomeController
 
         $asdata = array(
             'info' => $info,
-            'read' => $read['episodes'],
+            'read_log' => $read['episodes'],
             'arr_catename' => $arr_catename,
             'first' => $first,
             'huas' => $huas_num,
             'tag' => $tag,
             'lock' => $lock,
         );
-
         //猜你喜欢随机选择6个不为自己ID
         $guess = M('mh_list')->where(array('id' => array('neq', $mhid)))->order('rand()')->limit(6)->select();
         $this->assign('guess', $guess);

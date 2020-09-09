@@ -95,15 +95,15 @@
 			$money = $_site['mhmoney'];
 		}
 		$money = intval($money);
-		$read = M('mh_read')->where(array('ji_no'=>$vo,'mhid'=>$info['id'],'user_id'=>$user['id']))->find();
+		$read = M('read')->where(array('episodes'=>"$vo",'rid'=>$info['id'],'user_id'=>$user['id'],'type'=>'mh'))->find();
 	?>
-    
+
 		<if condition="$vo egt $info['pay_num'] and $info['pay_num'] gt 0">
 			<if condition="$read">
 				<div class="item">
 					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">
 						{$vo}话
-						<span>{$money}书币</span>
+						<span style="color: #ccc">{$money}书币</span>
 					</a>
 				</div>
 			<else />
@@ -184,12 +184,12 @@
 <div class="book-bar">
     <div class="inner">
         <div class="body">
-            <span class="chapter">1话</span>
+            <span class="chapter">{$read_log}话</span>
             <span class="title">{$first['title']}</span>
         </div>
         <div class="action">
-			<notempty name="read">
-					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$read}&parent={$user.id}" class="btn">继续阅读</a>
+			<notempty name="read_log">
+					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$read_log}&parent={$user.id}" class="btn">继续阅读</a>
 				<else>
 					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no=1&parent={$user.id}" class="btn">开始阅读</a>
 			</notempty>
