@@ -117,10 +117,10 @@
 		<if condition="$vo egt $info['pay_num'] and $info['pay_num'] gt 0">
 			<if condition="$read">
 				<div class="item">
-				<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">{$vo}章<span>{$money}书币</span></a></div>
+				<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">{$vo}章<span>{$money}元</span></a></div>
 			<else />
 				<div class="item lock">
-				<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">{$vo}章<span>{$money}书币</span></a></div>
+				<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">{$vo}章<span>{$money}元</span></a></div>
 			</if>
 		<else />
 			<div class="item">

@@ -96,32 +96,56 @@
 		}
 		$money = intval($money);
 		$read = M('read')->where(array('episodes'=>"$vo",'rid'=>$info['id'],'user_id'=>$user['id'],'type'=>'mh'))->find();
+
+		$buy_whole = M('buy_order as bo')
+		->field('bd.*')
+		->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+		->where(array('bd.rid' => $info['id'], 'bo.user_id' => $user['id'], 'bd.type' => 'mh','bo.type' => 2))
+		->find();
+
+		$buy_episodes = M('buy_order as bo')
+		->field('bd.*')
+		->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+		->where(array('bd.rid' => $info['id'], 'bo.user_id' => $user['id'], 'bd.type' => 'mh','bo.type' => 1,'bd.episodes' => $vo))
+		->find();
 	?>
 
-		<if condition="$vo egt $info['pay_num'] and $info['pay_num'] gt 0">
-			<if condition="$read">
-				<div class="item">
-					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">
-						{$vo}话
-						<span style="color: #ccc">{$money}书币</span>
-					</a>
-				</div>
-			<else />
-				<div class="item lock">
-					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">
-						{$vo}话
-						<span>{$money}书币</span>
-					</a>
-				</div>
-			</if>
-		<else />
+		<if condition="$buy_whole">
 			<div class="item">
 				<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="" style="text-align:center;">
-					{$vo}话
+					{$vo}c话
 					<span></span>
 				</a>
 			</div>
-		</if> 
+			<else />
+			<if condition="$vo egt $info['pay_num'] and $info['pay_num'] gt 0">
+				<if condition="$buy_episodes">
+					<div class="item">
+						<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="" style="text-align:center;">
+							{$vo}a话
+							<span></span>
+						</a>
+					</div>
+					<else />
+					<div class="item lock">
+						<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">
+							{$vo}b话
+							<span>{$money}元</span>
+						</a>
+					</div>
+				</if>
+				<else />
+				<div class="item">
+					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="" style="text-align:center;">
+						{$vo}c话
+						<span></span>
+					</a>
+				</div>
+			</if>
+
+		</if>
+
+
     </volist>
     </div>
     <div class="action">

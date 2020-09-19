@@ -509,8 +509,13 @@ class MhController extends HomeController
         $userinfo = M('user')->where(array("user_id" => $this->user['id']))->find();
 
         //查看该是否整本购买或购买过本小说的章节
-        $map        = "by_type = 2 OR (by_type = 1 AND episodes = '{$ji_no}')";
-        $buy_record = M('buy_record')->where(array('rid' => $mhid, 'user_id' => $this->user['id'], 'type' => 'mh'))->where($map)->select();
+        $map        = "bo.type = 2 OR (bo.type = 1 AND bd.episodes = '{$ji_no}')";
+        $buy_record = M('buy_order as bo')
+            ->field('bd.*')
+            ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+            ->where(array('bd.rid' => $mhid, 'bo.user_id' => $this->user['id'], 'bd.type' => 'mh'))
+            ->where($map)
+            ->select();
 
         //查看该用户是否看过本小说的章节
         $read = M('read')->where(array('rid' => $mhid, 'user_id' => $this->user['id'], 'episodes' => $ji_no, 'type' => 'mh'))->find();
@@ -861,44 +866,80 @@ class MhController extends HomeController
         $ji_start = I('post.ji_start');
         $ji_end   = I('post.ji_end');
 
-        $info      = M('mh_list')->where("id={$mhid}")->find();
-        $add_data  = [];
         $order_num = $this->user['id'] . date('Ymdhis') . rand(10000, 99999);
         switch ($type) {
             case 1://购买当前章节
-                $order_data  = [
+                $info = M('mh_episodes')->where("mhid = {$mhid} AND ji_no = {$current}")->find();
+
+                $order_data = [
                     'order_num' => $order_num,
                     'user_id'   => $this->user['id'],
-                    'type'      => 'mh',
+                    'type'      => 1,
                 ];
-                $res         = M('buy_record')->add($add_data);
+
+                M('buy_order')->add($order_data);
+                $order_id = M('buy_order')->getLastInsID();
 
                 $detail_data = [
-                    'order_id' => M('buy_record')->getLastInsID(),
-                    'user_id'  => $this->user['id'],
+                    'order_id' => $order_id,
                     'type'     => 'mh',
                     'rid'      => $mhid,
                     'episodes' => $current,
-                    'money'    => $info['whole_money'],
+                    'money'    => $info['money'],
                 ];
+
+                M('buy_detail')->add($detail_data);
                 break;
             case 2:
-                for ($i = $ji_start; $i <= $ji_end; $i++) {
-                    $add_data[] = [
-                        'user_id'  => $this->user['id'],
+                $info = M('mh_episodes')->where("mhid = {$mhid} AND ji_no <= {$ji_end} AND ji_no >= $ji_start")->select();
+
+                $order_data = [
+                    'order_num' => $order_num,
+                    'user_id'   => $this->user['id'],
+                    'type'      => 1,
+                ];
+
+                M('buy_order')->add($order_data);
+                $order_id = M('buy_order')->getLastInsID();
+
+                $detail_data = [];
+                foreach ($info as $v){
+                    $detail_data[] = [
+                        'order_id' => $order_id,
                         'type'     => 'mh',
                         'rid'      => $mhid,
-                        'by_type'  => 1,
-                        'episodes' => $i,
-                        'money'    => $info['chargemoney'],
+                        'episodes' => $v['ji_no'],
+                        'money'    => empty($v['money'])?$this->_site['mhmoney']:$v['money'],
                     ];
                 }
 
-                $res = M('buy_record')->addAll($add_data);
-        }
+                M('buy_detail')->addAll($detail_data);
+                break;
 
-        var_dump($res);
-        die;
+            case 3://整本购买
+                $info = M('mh_list')->where("id = {$mhid}")->find();
+                $order_data = [
+                    'order_num' => $order_num,
+                    'user_id'   => $this->user['id'],
+                    'type'      => 2,
+                ];
+
+                M('buy_order')->add($order_data);
+                $order_id = M('buy_order')->getLastInsID();
+
+                $detail_data = [
+                    'order_id' => $order_id,
+                    'type'     => 'mh',
+                    'rid'      => $mhid,
+                    'money'    => $info['whole_money'],
+                ];
+
+                M('buy_detail')->add($detail_data);
+                break;
+        }
+        $this->ajaxReturn(array('status' => 200, 'info' => '购买成功'));
+        $this->success('购买成功');
+
     }
 
     /**

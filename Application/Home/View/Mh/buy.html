@@ -117,7 +117,7 @@
     </div>
     <div class="radio-buy">
         <input class="radio-input" type="radio" id="type3" name="buy-type" value="3">
-        <label for="type3"></label> <span>购买全本</span>
+        <label for="type3"></label> <span>购买全本（{$info['whole_money']}元）</span>
     </div>
 </div>
 <style>
@@ -234,42 +234,16 @@
         }, function (d) {
             $('#pay-coin-tips').remove();
             console.log(d);
-            // if (d) {
-            //     if (d.status) {
-            //         if (model == 1) {
-            //             //调起微信支付js
-            //             var jsapi = d.info;
-            //             var jsApiParameters = eval('(' + jsapi + ')');
-            //             WeixinJSBridge.invoke(
-            //                 'getBrandWCPayRequest',
-            //                 jsApiParameters,
-            //                 function (res) {
-            //                     WeixinJSBridge.log(res.err_msg);
-            //                     if (res.err_msg == "get_brand_wcpay_request:ok") {
-            //                         tips('充值成功');
-            //                         setTimeout(function () {
-            //                             location.href = "{:U('Mh/my')}";
-            //                         }, 2000)
-            //                     } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
-            //                         //tips('您取消了支付');
-            //
-            //                         get_order_status();
-            //                     } else {
-            //                         tips('支付失败，请重试！');
-            //                     }
-            //                 }
-            //             );
-            //         } else if (model == 2) {
-            //             location.href = d.info;
-            //         } else if (model == 3) {
-            //             location.href = "{:U('Mh/paysApi')}&qrcode=" + d.info.qrcode + "&sn=" + d.info.sn + "&money=" + d.info.money;
-            //         }
-            //     } else {
-            //         tips(d.info);
-            //     }
-            // } else {
-            //     tips('请求失败!');
-            // }
+            if (d) {
+                if (d.status == 200) {
+                    tips('购买成功');
+                    location.href = "{:U('Mh/bookinfo')}&mhid=" + mhid;
+                } else {
+                    tips(d.info);
+                }
+            } else {
+                tips('请求失败!');
+            }
         });
 
     });

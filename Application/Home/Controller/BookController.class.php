@@ -567,23 +567,49 @@ class BookController extends HomeController
                     }
                     $money = intval($money);
                     $read  = M('read')->where(array('episodes' => $i, 'rid' => $id, 'user_id' => $this->user['id'], 'type' => $type))->find();
-                    if ($i >= $info['pay_num'] && $info['pay_num'] > 0) {
-                        if ($read) {
-                            $html .= '<div class="item">';
-                        } else {
-                            $html .= '<div class="item lock">';
-                        }
-                    } else {
-                        $money = 0;
+
+                    $buy_whole = M('buy_order as bo')
+                        ->field('bd.*')
+                        ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+                        ->where(array('bd.rid' => $id, 'bo.user_id' => $this->user['id'], 'bd.type' => $type,'bo.type' => 2))
+                        ->find();
+
+                    $buy_episodes = M('buy_order as bo')
+                        ->field('bd.*')
+                        ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+                        ->where(array('bd.rid' => $id, 'bo.user_id' => $this->user['id'], 'bd.type' => $type,'bo.type' => 1,'bd.episodes' => $i))
+                        ->find();
+
+//                    $html='';
+                    if($buy_whole){
                         $html  .= '<div class="item">';
+                        $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
+                    }else{
+                        if ($i >= $info['pay_num'] && $info['pay_num'] > 0) {
+                            if ($buy_episodes) {
+                                $html .= '<div class="item">';
+                                $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
+                            } else {
+                                $html .= '<div class="item lock">';
+                                $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '话';
+                            }
+                        } else {
+                            $money = 0;
+                            $html  .= '<div class="item">';
+                            $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
+                        }
+                    }
+                    
+                    if($buy_whole){
+                        $html .= '<span></span>';
+                    }else{
+                        if($buy_episodes){
+                            $html .= '<span></span>';
+                        }else{
+                            $html .= '<span>' . $money . '书币</span>';
+                        }
                     }
 
-                    $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '话';
-                    if($read){
-                        $html .= '<span style="color: #ccc">' . $money . '书币</span>';
-                    }else{
-                        $html .= '<span>' . $money . '书币</span>';
-                    }
                     $html .= '</a>';
                     $html .= '</div>';
                 } else {
