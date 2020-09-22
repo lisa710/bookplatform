@@ -62,8 +62,8 @@ class MemberController extends AdminController
             $this->error('密码不能为空');
             exit;
         }
-
-        if(preg_match("/^1[34578]\d{9}$/", $_POST['mobile'])){
+        
+        if(!preg_match("/^1[34578]\d{9}$/", $_POST['mobile'])){
             $this->error('手机号码格式不正确');
             exit;
         }

@@ -891,6 +891,17 @@ class MhController extends HomeController
                 M('buy_detail')->add($detail_data);
                 break;
             case 2:
+                $buy_detail = M('buy_order as bo')
+                    ->field('episodes')
+                    ->join('vv_buy_detail bd ON bd.order_id = bo.id', 'left')
+                    ->where(['bo.user_id' => $this->user['id'], 'bo.type' => 1, 'bd.rid' => $mhid])
+                    ->order('bd.episodes desc')
+                    ->find();
+
+                if (!empty($buy_detail) && $ji_start <= $buy_detail['episodes']) {
+                    $this->error('您的购买中存在重复章节，请从第' . ($buy_detail['episodes'] + 1) . '章开始购买');
+                }
+
                 $info = M('mh_episodes')->where("mhid = {$mhid} AND ji_no <= {$ji_end} AND ji_no >= $ji_start")->select();
 
                 $order_data = [
@@ -903,13 +914,13 @@ class MhController extends HomeController
                 $order_id = M('buy_order')->getLastInsID();
 
                 $detail_data = [];
-                foreach ($info as $v){
+                foreach ($info as $v) {
                     $detail_data[] = [
                         'order_id' => $order_id,
                         'type'     => 'mh',
                         'rid'      => $mhid,
                         'episodes' => $v['ji_no'],
-                        'money'    => empty($v['money'])?$this->_site['mhmoney']:$v['money'],
+                        'money'    => empty($v['money']) ? $this->_site['mhmoney'] : $v['money'],
                     ];
                 }
 
@@ -917,7 +928,7 @@ class MhController extends HomeController
                 break;
 
             case 3://整本购买
-                $info = M('mh_list')->where("id = {$mhid}")->find();
+                $info       = M('mh_list')->where("id = {$mhid}")->find();
                 $order_data = [
                     'order_num' => $order_num,
                     'user_id'   => $this->user['id'],
@@ -937,7 +948,7 @@ class MhController extends HomeController
                 M('buy_detail')->add($detail_data);
                 break;
         }
-        $this->ajaxReturn(array('status' => 200, 'info' => '购买成功'));
+//        $this->ajaxReturn(array('status' => 200, 'info' => '购买成功'));
         $this->success('购买成功');
 
     }
