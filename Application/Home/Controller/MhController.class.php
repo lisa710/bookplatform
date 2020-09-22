@@ -948,9 +948,7 @@ class MhController extends HomeController
                 M('buy_detail')->add($detail_data);
                 break;
         }
-//        $this->ajaxReturn(array('status' => 200, 'info' => '购买成功'));
         $this->success('购买成功');
-
     }
 
     /**
