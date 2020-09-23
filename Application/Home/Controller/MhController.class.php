@@ -530,32 +530,32 @@ class MhController extends HomeController
             }
 
             //查看这集是否阅读过？
-            if (!$read) {
-                $money = M('mh_episodes')->where(array('ji_no' => $ji_no, 'mhid' => $mhid))->getField("money");
-                if (!$money || $money <= 0) {
-                    $money = $this->_site['mhmoney'];
-                }
-                if ($this->user['money'] < $money) {
-                    $this->error('您的账户书币不足！', U('Mh/pay'));
-                }
-
-                M('user')->where(array('id' => $this->user['id']))->setDec("money", $money);
-
-                //查询是否有充值记录
-                $read_charge = M('read_charge')->where(array('user_id' => $this->user['id'], 'rid' => $mhid, 'type' => 'mh'))->find();
-                if (!$read_charge) {
-                    M('read_charge')->add(array(
-                        'user_id'     => $this->user['id'],
-                        'rid'         => $mhid,
-                        'type'        => 'mh',
-                        'create_time' => NOW_TIME,
-                    ));
-                    M('mh_list')->where(array('id' => $mhid))->setInc('chargenum', 1);
-                }
-                M('mh_list')->where(array('id' => $mhid))->setInc('chargemoney', $money);
-
-                flog($this->user['id'], "money", "-" . $money, 8);
-            }
+//            if (!$read) {
+//                $money = M('mh_episodes')->where(array('ji_no' => $ji_no, 'mhid' => $mhid))->getField("money");
+//                if (!$money || $money <= 0) {
+//                    $money = $this->_site['mhmoney'];
+//                }
+//                if ($this->user['money'] < $money) {
+//                    $this->error('您的账户书币不足！', U('Mh/pay'));
+//                }
+//
+//                M('user')->where(array('id' => $this->user['id']))->setDec("money", $money);
+//
+//                //查询是否有充值记录
+//                $read_charge = M('read_charge')->where(array('user_id' => $this->user['id'], 'rid' => $mhid, 'type' => 'mh'))->find();
+//                if (!$read_charge) {
+//                    M('read_charge')->add(array(
+//                        'user_id'     => $this->user['id'],
+//                        'rid'         => $mhid,
+//                        'type'        => 'mh',
+//                        'create_time' => NOW_TIME,
+//                    ));
+//                    M('mh_list')->where(array('id' => $mhid))->setInc('chargenum', 1);
+//                }
+//                M('mh_list')->where(array('id' => $mhid))->setInc('chargemoney', $money);
+//
+//                flog($this->user['id'], "money", "-" . $money, 8);
+//            }
         }
 
         if (!$read) {
