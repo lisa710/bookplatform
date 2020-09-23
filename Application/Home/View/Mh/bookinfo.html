@@ -100,13 +100,13 @@
 		$buy_whole = M('buy_order as bo')
 		->field('bd.*')
 		->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
-		->where(array('bd.rid' => $info['id'], 'bo.user_id' => $user['id'], 'bd.type' => 'mh','bo.type' => 2))
+		->where(array('bo.rid' => $info['id'], 'bo.user_id' => $user['id'], 'bo.book_type' => 'mh','bo.buy_type' => 2))
 		->find();
 
 		$buy_episodes = M('buy_order as bo')
 		->field('bd.*')
 		->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
-		->where(array('bd.rid' => $info['id'], 'bo.user_id' => $user['id'], 'bd.type' => 'mh','bo.type' => 1,'bd.episodes' => $vo))
+		->where(array('bo.rid' => $info['id'], 'bo.user_id' => $user['id'], 'bo.book_type' => 'mh','bo.buy_type' => 1,'bd.episodes' => $vo))
 		->find();
 	?>
 
@@ -208,13 +208,13 @@
 <div class="book-bar">
     <div class="inner">
         <div class="body">
-            <span class="chapter">{$read_log}话</span>
+            <span class="chapter">{$first['ji_no']}话</span>
             <span class="title">{$first['title']}</span>
         </div>
         <div class="action">
 			<notempty name="read_log">
 					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no={$read_log}&parent={$user.id}" class="btn">继续阅读</a>
-				<else>
+				<else />
 					<a href="{:U('Mh/inforedit')}&mhid={$info['id']}&ji_no=1&parent={$user.id}" class="btn">开始阅读</a>
 			</notempty>
         </div>

@@ -500,6 +500,47 @@ class BookController extends HomeController
     }
 
 
+    public function getBuyRecord()
+    {
+        $book_list = M('buy_order as bo')
+            ->field("bo.*,min(bd.episodes) as start,max(bd.episodes) as end,sum(bd.money) as money,
+                            bl.title,bl.cover_pic,mb.name as member_name")
+            ->join('vv_buy_detail as bd ON bd.order_id = bo.id','left')
+            ->join('vv_book AS bl ON bl.id = bo.rid','left')
+            ->join('vv_member AS mb ON mb.id = bl.member_id','left')
+            ->where(['bo.user_id'=>$this->user['id'],'bo.book_type'=>'xs'])
+            ->group('bo.id')
+            ->select();
+
+        $mh_list = M('buy_order as bo')
+            ->field("bo.*,min(bd.episodes) as start,max(bd.episodes) as end,sum(bd.money) as money,
+                            ml.title,ml.cover_pic,mb.name as member_name")
+            ->join('vv_buy_detail as bd ON bd.order_id = bo.id','left')
+            ->join('vv_mh_list AS ml ON ml.id = bo.rid','left')
+            ->join('vv_member AS mb ON mb.id = ml.member_id','left')
+            ->where(['bo.user_id'=>$this->user['id'],'bo.book_type'=>'mh'])
+            ->group('bo.id')
+            ->select();
+
+        $list = array_merge($book_list,$mh_list);
+        $list = $this->arraySort($list,'create_time','desc');
+
+        $this->success($list);
+    }
+
+    function arraySort($arr, $keys, $type = 'asc') {
+        $keysvalue = $new_array = array();
+        foreach ($arr as $k => $v){
+            $keysvalue[$k] = $v[$keys];
+        }
+
+        $type == 'asc'?asort($keysvalue):arsort($keysvalue);
+        foreach ($keysvalue as $k => $v) {
+            $new_array[$k] = $arr[$k];
+        }
+        return $new_array;
+    }
+
     //获取账单记录
     public function getRecord()
     {
@@ -571,20 +612,20 @@ class BookController extends HomeController
                     $buy_whole = M('buy_order as bo')
                         ->field('bd.*')
                         ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
-                        ->where(array('bd.rid' => $id, 'bo.user_id' => $this->user['id'], 'bd.type' => $type,'bo.type' => 2))
+                        ->where(array('bo.rid' => $id, 'bo.user_id' => $this->user['id'], 'bo.book_type' => $type, 'bo.buy_type' => 2))
                         ->find();
 
                     $buy_episodes = M('buy_order as bo')
                         ->field('bd.*')
                         ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
-                        ->where(array('bd.rid' => $id, 'bo.user_id' => $this->user['id'], 'bd.type' => $type,'bo.type' => 1,'bd.episodes' => $i))
+                        ->where(array('bo.rid' => $id, 'bo.user_id' => $this->user['id'], 'bo.book_type' => $type, 'bo.buy_type' => 1, 'bd.episodes' => $i))
                         ->find();
 
 //                    $html='';
-                    if($buy_whole){
-                        $html  .= '<div class="item">';
+                    if ($buy_whole) {
+                        $html .= '<div class="item">';
                         $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
-                    }else{
+                    } else {
                         if ($i >= $info['pay_num'] && $info['pay_num'] > 0) {
                             if ($buy_episodes) {
                                 $html .= '<div class="item">';
@@ -596,16 +637,16 @@ class BookController extends HomeController
                         } else {
                             $money = 0;
                             $html  .= '<div class="item">';
-                            $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
+                            $html  .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
                         }
                     }
-                    
-                    if($buy_whole){
+
+                    if ($buy_whole) {
                         $html .= '<span></span>';
-                    }else{
-                        if($buy_episodes){
+                    } else {
+                        if ($buy_episodes) {
                             $html .= '<span></span>';
-                        }else{
+                        } else {
                             $html .= '<span>' . $money . '书币</span>';
                         }
                     }
@@ -631,9 +672,9 @@ class BookController extends HomeController
                     }
 
                     $html .= '<a href="' . U('Book/inforedit', array('bid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '章';
-                    if($read){
+                    if ($read) {
                         $html .= '<span style="color: #ccc">' . $money . '书币</span>';
-                    }else{
+                    } else {
                         $html .= '<span>' . $money . '书币</span>';
                     }
                     $html .= '</a>';

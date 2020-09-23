@@ -105,6 +105,9 @@
         </a>
     </div>
 </div>
+<div >
+    <img src="{$info['cover_pic']}" alt="" style="width: 100%;height: 200px;">
+</div>
 <div class="list">
     <div class="radio-buy">
         <input class="radio-input current-ji" type="radio" id="type1" name="buy-type" value="1">
@@ -235,7 +238,7 @@
             $('#pay-coin-tips').remove();
             console.log(d);
             if (d) {
-                if (d.status == 200) {
+                if (d.status) {
                     tips('购买成功');
                     location.href = "{:U('Mh/bookinfo')}&mhid=" + mhid;
                 } else {
