@@ -99,6 +99,10 @@ class ProductController extends AdminController {
             );
             $this->assign($asdata);
         }
+
+        $member_list = M('member')->field('id,name')->where(['status' => 1])->select();
+        $this->assign('member_list',$member_list);
+
         $this->display();
     }
 	

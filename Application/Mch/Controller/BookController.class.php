@@ -28,6 +28,7 @@ class BookController extends AdminController
     // 编辑、添加小说
     public function edit()
     {
+//        dump($this->_site);die;
         if (IS_POST) {
             $cateids = implode(',', $_POST['arrcateids']);
             unset($_POST['arrcateids']);

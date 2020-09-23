@@ -17,7 +17,7 @@ class BookController extends AdminController {
 		}
 		$this -> _list('book',$where, $order);
 	}
-	
+
 	// 编辑、添加小说
     public function edit()
     {
@@ -95,9 +95,13 @@ class BookController extends AdminController {
             );
             $this->assign($asdata);
         }
+
+        $member_list = M('member')->field('id,name')->where(['status' => 1])->select();
+        $this->assign('member_list',$member_list);
+
         $this->display();
     }
-	
+
 	public function addEpisodes($path,$bid){
 		$temp = array();
 		if (is_dir($path)) {
@@ -136,13 +140,13 @@ class BookController extends AdminController {
 					M('book')->where(array('id'=>$bid))->save(array('episodes'=>$i));
 					M('book_episodes')->add($ds);
 					$i++;
-				}	
+				}
 			}
 		}
 	}
-	
 
-	
+
+
 	public function episodes() {
 		$bid = I('bid', 0, 'intval');
 		if(empty($bid)) {
@@ -154,7 +158,7 @@ class BookController extends AdminController {
 		$cond = array('bid'=>$bid);
 		$this -> _list('book_episodes',$cond, 'id desc');
 	}
-	
+
 	// 编辑、添加小说分集
 	public function episodesedit(){
 		$bid = I('bid', 0, 'intval');
@@ -169,17 +173,17 @@ class BookController extends AdminController {
 				$_POST['bid'] = $bid;
 				$rs = M('book_episodes') -> add($_POST);
 			}
-			
+
 			$cnt = M('book_episodes')->where("bid={$bid}")->count();
 			M('book')->where("id={$bid}")->setField('episodes', $cnt);
-			
+
 			$this -> success('操作成功！', U('episodes')."&bid={$bid}");
 			exit;
 		}
-	
+
 		if(intval($_GET['id'])>0) {
 			$info = M('book_episodes') -> find($_GET['id']);
-			
+
 			$asdata = array(
 					'info'			=> $info,
 			);
@@ -190,31 +194,31 @@ class BookController extends AdminController {
 		$this->assign('bid', $bid);
 		$this -> display();
 	}
-	
-	
+
+
 	// 删除小说
 	public function del(){
 		$this -> _del('book', $_GET['id']);
 		$this -> success('操作成功！', $_SERVER['HTTP_REFERER']);
 	}
-	
+
 	// 删除小说分集
 	public function episodesdel(){
 		$this -> _del('book_episodes', $_GET['id']);
 		$this -> success('操作成功！', $_SERVER['HTTP_REFERER']);
 	}
-	
+
 	//评论列表
 	public function comments(){
 		$cid = I('get.id');
 		$this->_list("comment",array('cid'=>$cid,'type'=>"xs"),"create_time desc");
 	}
-		
+
 	public function delComment(){
 		$this -> _del('comment', $_GET['id']);
 		$this -> success('操作成功！', $_SERVER['HTTP_REFERER']);
-	}	
-	
+	}
+
 	public function addComment(){
 		$cid = I('get.cid');
 		if(IS_POST){
@@ -227,15 +231,15 @@ class BookController extends AdminController {
 				'content'=>I('post.content'),
 				'type'=>'xs',
 				'create_time'=>time(),
-			)); 
+			));
 			$this->success('添加成功',U('comments',array('id'=>$cid)));
 			exit;
 		}
 		$this->display();
-		
+
 	}
-	
-	
+
+
 	//打赏列表
 	public function sends(){
 		$mxid = I('get.id');

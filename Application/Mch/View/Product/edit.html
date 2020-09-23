@@ -22,12 +22,20 @@
 							<input type="text" name="title" id="title" value="{$info.title}" class="smallinput" />
 						</td>
 					</tr>
-					<tr>
-						<th class="title">漫画作者<small></small></th>
+<!--					<tr>-->
+<!--						<th class="title">漫画作者<small></small></th>-->
+<!--						<td>-->
+<!--							<input type="text" name="author" id="author" value="{$info.author}" class="smallinput" />-->
+<!--						</td>-->
+<!--					</tr>-->
+
+					<tr style="display: none">
+						<th class="title">小说作者<small></small></th>
 						<td>
-							<input type="text" name="author" id="author" value="{$info.author}" class="smallinput" />
+							<input type="text" name="member_id" id="member_id" value="{:session('mch.id')}" class="smallinput" />
 						</td>
 					</tr>
+
 					<tr>
 						<th class="title">排序权值<small></small></th>
 						<td>
