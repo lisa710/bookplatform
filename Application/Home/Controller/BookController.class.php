@@ -626,7 +626,7 @@ class BookController extends HomeController
                         $html .= '<div class="item">';
                         $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
                     } else {
-                        if ($i >= $info['pay_num'] && $info['pay_num'] > 0) {
+                        if ($i >= $info['pay_num'] && $info['pay_num'] > 0 && $info['free_type'] == 2) {
                             if ($buy_episodes) {
                                 $html .= '<div class="item">';
                                 $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
@@ -635,7 +635,6 @@ class BookController extends HomeController
                                 $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '话';
                             }
                         } else {
-                            $money = 0;
                             $html  .= '<div class="item">';
                             $html  .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
                         }
@@ -646,8 +645,10 @@ class BookController extends HomeController
                     } else {
                         if ($buy_episodes) {
                             $html .= '<span></span>';
-                        } else {
-                            $html .= '<span>' . $money . '书币</span>';
+                        } elseif($i >= $info['pay_num'] && $info['pay_num'] > 0 && $info['free_type'] == 2) {
+                            $html .= '<span>' . $money . '元</span>';
+                        }else{
+                            $html .= '<span></span>';
                         }
                     }
 
