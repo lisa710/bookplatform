@@ -43,26 +43,35 @@ class MhController extends HomeController
 
     public function index()
     {
-        $member_id     = M('follow')->where(['user_id' => $this->user['id']])->select();
-        $member_id_arr = [];
+//        $member_id     = M('follow')->where(['user_id' => $this->user['id']])->select();
+//        $member_id_arr = [];
         $mhcate        = [];
+//
+//        if (!empty($member_id)) {
+//            foreach ($member_id as $vm) {
+//                $member_id_arr[] = $vm['member_id'];
+//            }
+//            $where['member_id'] = array('in', $member_id_arr);
 
-        if (!empty($member_id)) {
-            foreach ($member_id as $vm) {
-                $member_id_arr[] = $vm['member_id'];
-            }
-            $where['member_id'] = array('in', $member_id_arr);
+        foreach ($this->_w_opus as $k => $v) {
+            if ($v['show'] == 2 && $v['isshow']) {
+                $mh_list = M('read as r')->field('ml.*')
+                    ->join('vv_mh_list as ml on ml.id = r.rid','left')
+                    ->where(['r.type' => 'mh','r.user_id' => $this->user['id']])
+                    ->group('ml.id')
+                    ->select();
 
-            foreach ($this->_w_opus as $k => $v) {
-                if ($v['show'] == 2 && $v['isshow']) {
-                    $mh_list            = M('mh_list')->where($where)->order('sort desc')->select();
-                    $book_list          = M('book')->where($where)->order('sort desc')->select();
-                    $mhcate[$k]['name'] = $v['name'];
-                    $mhcate[$k]['sort'] = $v['sort'];
-                    $mhcate[$k]['list'] = array_merge($mh_list, $book_list);
-                }
+                $book_list = M('read as r')->field('b.*')
+                    ->join('vv_book as b on b.id = r.rid','left')
+                    ->where(['r.type' => 'xs','r.user_id' => $this->user['id']])
+                    ->select();
+
+                $mhcate[$k]['name'] = $v['name'];
+                $mhcate[$k]['sort'] = $v['sort'];
+                $mhcate[$k]['list'] = array_merge($mh_list, $book_list);
             }
         }
+//        }
 
         $this->assign('mhcate', $mhcate);
 
@@ -79,9 +88,9 @@ class MhController extends HomeController
      */
     public function mhlist()
     {
-        $mhcate          = I("get.cate");
+        $mhcate = I("get.cate");
         $where['mhcate'] = array('like', '%' . $mhcate . '%');
-        $list            = M('mh_list')->where($where)->order('sort desc')->limit(50)->select();
+        $list = M('mh_list')->where($where)->order('sort desc')->limit(50)->select();
         $this->assign('list', $list);
         $this->display();
     }
@@ -137,12 +146,12 @@ class MhController extends HomeController
      */
     public function book_cate()
     {
-        $cateid    = I('cateid', 0, 'intval');
-        $status    = I('status', 0, 'intval');
+        $cateid = I('cateid', 0, 'intval');
+        $status = I('status', 0, 'intval');
         $free_type = I('free_type', 0, 'intval');
 
         $cond = array(
-            'status'    => $status,
+            'status' => $status,
             'free_type' => $free_type,
         );
 
@@ -156,12 +165,12 @@ class MhController extends HomeController
             $cond['_string'] = 'FIND_IN_SET(' . $cateid . ',cateids)';
         }
 
-        $list   = M('mh_list')->where($cond)->order('sort desc')->select();
+        $list = M('mh_list')->where($cond)->order('sort desc')->select();
         $asdata = array(
-            'list'      => $list,
-            'selfurl'   => __SELF__,
-            'cateid'    => $cateid,
-            'status'    => $status,
+            'list' => $list,
+            'selfurl' => __SELF__,
+            'cateid' => $cateid,
+            'status' => $status,
             'free_type' => $free_type,
         );
 
@@ -178,7 +187,7 @@ class MhController extends HomeController
         if (!empty($list) && is_array($list)) {
             foreach ($list as $k => &$v) {
                 $arr_catename = '';
-                $cateids      = $v['cateids'];
+                $cateids = $v['cateids'];
                 if (!empty($cateids)) {
                     $arr_cateids = explode(',', $cateids);
                     foreach ($arr_cateids as $k => $cateid) {
@@ -219,19 +228,19 @@ class MhController extends HomeController
             }
             if ($order == "overs") {
                 $where['status'] = 2;
-                $order           = "sort desc";
+                $order = "sort desc";
             }
             if ($order == "free") {
                 $where['free_type'] = 1;
-                $order              = "sort desc";
+                $order = "sort desc";
             }
             if ($order == "cate1") {
                 $where['mhcate'] = array('like', '%9%');
-                $order           = "sort desc";
+                $order = "sort desc";
             }
             if ($order == "cate2") {
                 $where['mhcate'] = array('like', '%11%');
-                $order           = "sort desc";
+                $order = "sort desc";
             }
         } else {
             $order = "sort desc";
@@ -240,7 +249,7 @@ class MhController extends HomeController
         if (!empty($list) && is_array($list)) {
             foreach ($list as $k => &$v) {
                 $arr_catename = '';
-                $cateids      = $v['cateids'];
+                $cateids = $v['cateids'];
                 if (!empty($cateids)) {
                     $arr_cateids = explode(',', $cateids);
                     foreach ($arr_cateids as $k => $cateid) {
@@ -276,7 +285,7 @@ class MhController extends HomeController
         if (!empty($list) && is_array($list)) {
             foreach ($list as $k => &$v) {
                 $arr_catename = '';
-                $cateids      = $v['cateids'];
+                $cateids = $v['cateids'];
                 if (!empty($cateids)) {
                     $arr_cateids = explode(',', $cateids);
                     foreach ($arr_cateids as $k => $cateid) {
@@ -307,10 +316,10 @@ class MhController extends HomeController
      */
     public function book_shelf()
     {
-        $list   = M('mh_collect')->where(array("user_id" => $this->user['id']))->select();
+        $list = M('mh_collect')->where(array("user_id" => $this->user['id']))->select();
         $asdata = array(
             'list' => $list,
-            'cnt'  => count($list),
+            'cnt' => count($list),
         );
 
         $this->assign($asdata);
@@ -361,7 +370,7 @@ class MhController extends HomeController
         if (!empty($list) && is_array($list)) {
             foreach ($list as $k => &$v) {
                 $arr_catename = '';
-                $cateids      = $v['cateids'];
+                $cateids = $v['cateids'];
                 if (!empty($cateids)) {
                     $arr_cateids = explode(',', $cateids);
                     foreach ($arr_cateids as $k => $cateid) {
@@ -404,12 +413,12 @@ class MhController extends HomeController
         M('mh_list')->where("id={$mhid}")->setInc('reader', 1);
 
         $read = M('read')->where(array(
-            "rid"     => $mhid,
+            "rid" => $mhid,
             "user_id" => $this->user['id'],
-            "type"    => 'mh',
+            "type" => 'mh',
         ))->order('create_time desc')->find();
 
-        $tag  = 2; //未收藏
+        $tag = 2; //未收藏
         $lock = 1; //1锁 2不锁
         if (session('user.id') > 0) {
             $old = M('mh_collect')->where(array("mhid" => $mhid, "user_id" => $this->user['id'], "type" => "mh"))->find();
@@ -424,7 +433,7 @@ class MhController extends HomeController
         }
 
         $arr_catename = array();
-        $cateids      = $info['cateids'];
+        $cateids = $info['cateids'];
         if (!empty($cateids)) {
             $arr_cateids = explode(',', $cateids);
             foreach ($arr_cateids as $k => $cateid) {
@@ -446,13 +455,13 @@ class MhController extends HomeController
         }
 
         $asdata = array(
-            'info'         => $info,
-            'read_log'     => $read['episodes'],
+            'info' => $info,
+            'read_log' => $read['episodes'],
             'arr_catename' => $arr_catename,
-            'first'        => $first,
-            'huas'         => $huas_num,
-            'tag'          => $tag,
-            'lock'         => $lock,
+            'first' => $first,
+            'huas' => $huas_num,
+            'tag' => $tag,
+            'lock' => $lock,
         );
 
 
@@ -479,7 +488,7 @@ class MhController extends HomeController
      */
     public function inforedit()
     {
-        $mhid  = I('mhid', 'intval', 0);
+        $mhid = I('mhid', 'intval', 0);
         $ji_no = I('ji_no', 'intval', 0);
 
         if (empty($mhid) || empty($ji_no)) {
@@ -489,10 +498,10 @@ class MhController extends HomeController
         //查询是否用户阅读
         if (!M('rlog')->where(array('rid' => $mhid, 'ji_no' => $ji_no, 'user_id' => $this->user['id'], 'type' => 'mh'))->find()) {
             M('rlog')->add(array(
-                "rid"     => $mhid,
+                "rid" => $mhid,
                 "user_id" => $this->user['id'],
-                "ji_no"   => $ji_no,
-                "type"    => 'mh',
+                "ji_no" => $ji_no,
+                "type" => 'mh',
             ));
             M('mh_episodes')->where(array('mhid' => $mhid, 'ji_no' => $ji_no))->setInc('readnums', 1);
         }
@@ -510,7 +519,7 @@ class MhController extends HomeController
         $userinfo = M('user')->where(array("user_id" => $this->user['id']))->find();
 
         //查看该是否整本购买或购买过本小说的章节
-        $map        = "bo.buy_type = 2 OR (bo.buy_type = 1 AND bd.episodes = '{$ji_no}')";
+        $map = "bo.buy_type = 2 OR (bo.buy_type = 1 AND bd.episodes = '{$ji_no}')";
         $buy_record = M('buy_order as bo')
             ->field('bd.*')
             ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
@@ -560,22 +569,22 @@ class MhController extends HomeController
 
         if (!$read) {
             M('read')->add(array(
-                'rid'         => $mhid,
-                'user_id'     => $this->user['id'],
-                'episodes'    => $ji_no,
-                'title'       => $mhinfo['title'],
-                'pic'         => $mhinfo['cover_pic'],
-                'summary'     => $mhinfo['summary'],
-                'author'      => $mhinfo['author'],
+                'rid' => $mhid,
+                'user_id' => $this->user['id'],
+                'episodes' => $ji_no,
+                'title' => $mhinfo['title'],
+                'pic' => $mhinfo['cover_pic'],
+                'summary' => $mhinfo['summary'],
+                'author' => $mhinfo['author'],
                 'create_time' => NOW_TIME,
-                'type'        => 'mh',
+                'type' => 'mh',
             ));
         } else {
             M('read')->where(array(
-                "rid"      => $mhid,
-                "user_id"  => $this->user['id'],
+                "rid" => $mhid,
+                "user_id" => $this->user['id'],
                 "episodes" => $ji_no,
-                "type"     => 'mh',
+                "type" => 'mh',
             ))->setField('create_time', time());
         }
 
@@ -590,11 +599,11 @@ class MhController extends HomeController
             $this->error('漫画数据缺失！', U('Mh/bookinfo') . "&mhid={$mhid}");
         }
 
-        $likes   = M('mh_likes')->where("mhid={$mhid} and ji_no={$ji_no} and user_id=" . $this->user['id'])->find();
+        $likes = M('mh_likes')->where("mhid={$mhid} and ji_no={$ji_no} and user_id=" . $this->user['id'])->find();
         $collect = M('mh_collect')->where(array("mhid" => $bid, "user_id" => $this->user['id'], "type" => "mh"))->find();
 
         $arr_pics = array();
-        $pics     = $jiinfo['pics'];
+        $pics = $jiinfo['pics'];
         if (!empty($pics)) {
             $arr_pics = explode(',', $pics);
         }
@@ -605,15 +614,15 @@ class MhController extends HomeController
         //dump($arr_pics);exit;
 
         $asdata = array(
-            'mhinfo'       => $mhinfo,
-            'mhid'         => $mhid,
-            'ji_no'        => $ji_no,
-            'jiinfo'       => $jiinfo,
-            'likes'        => count($likes),
-            'collect'      => count($collect),
+            'mhinfo' => $mhinfo,
+            'mhid' => $mhid,
+            'ji_no' => $ji_no,
+            'jiinfo' => $jiinfo,
+            'likes' => count($likes),
+            'collect' => count($collect),
             'arr_catename' => $arr_catename,
-            'arr_pics'     => $arr_pics,
-            'first'        => $first,
+            'arr_pics' => $arr_pics,
+            'first' => $first,
         );
 
         //若有文案链接的增加文案阅读量
@@ -638,24 +647,24 @@ class MhController extends HomeController
      */
     public function user_add_book_shelf_ajax()
     {
-        $status  = 1;
-        $info    = '';
-        $tag     = 1; //收藏成功
-        $mhid    = I('post.mhid');
+        $status = 1;
+        $info = '';
+        $tag = 1; //收藏成功
+        $mhid = I('post.mhid');
         $user_id = session('user.id');
         if ($user_id > 0) {
-            $mhid   = I('mhid', 0, 'intval');
+            $mhid = I('mhid', 0, 'intval');
             $mhinfo = M('mh_list')->where("id={$mhid}")->find();
-            $old    = M('mh_collect')->where(array("mhid" => $mhid, "user_id" => $this->user['id'], 'type' => "mh"))->find();
+            $old = M('mh_collect')->where(array("mhid" => $mhid, "user_id" => $this->user['id'], 'type' => "mh"))->find();
             if (empty($old)) {
                 $ins = array(
-                    'mhid'        => $mhid,
-                    'user_id'     => $user_id,
-                    'title'       => $mhinfo['title'],
-                    'cover_pic'   => $mhinfo['cover_pic'],
-                    'episodes'    => $mhinfo['episodes'],
+                    'mhid' => $mhid,
+                    'user_id' => $user_id,
+                    'title' => $mhinfo['title'],
+                    'cover_pic' => $mhinfo['cover_pic'],
+                    'episodes' => $mhinfo['episodes'],
                     'create_time' => NOW_TIME,
-                    'type'        => "mh",
+                    'type' => "mh",
                 );
                 M('mh_collect')->add($ins);
                 M('mh_list')->where("id={$mhid}")->setInc('collect', 1);
@@ -666,7 +675,7 @@ class MhController extends HomeController
             }
         } else {
             $status = 2;
-            $info   = '请先登录！';
+            $info = '请先登录！';
         }
 
         $this->ajaxReturn(array('status' => $status, 'info' => $info, 'tag' => $tag));
@@ -678,19 +687,19 @@ class MhController extends HomeController
     public function chapter_dianzan_ajax()
     {
         $status = 1;
-        $info   = '';
-        $tag    = 1; //点赞成功
+        $info = '';
+        $tag = 1; //点赞成功
 
         $user_id = session('user.id');
         if ($user_id > 0) {
-            $mhid  = I('mhid', 0, 'intval');
+            $mhid = I('mhid', 0, 'intval');
             $ji_no = I('ji_no', 0, 'intval');
-            $old   = M('mh_likes')->where("mhid={$mhid} and ji_no={$ji_no} and user_id={$user_id}")->find();
+            $old = M('mh_likes')->where("mhid={$mhid} and ji_no={$ji_no} and user_id={$user_id}")->find();
             if (empty($old)) {
                 $ins = array(
-                    'mhid'        => $mhid,
-                    'ji_no'       => $ji_no,
-                    'user_id'     => $user_id,
+                    'mhid' => $mhid,
+                    'ji_no' => $ji_no,
+                    'user_id' => $user_id,
                     'create_time' => NOW_TIME,
                 );
                 M('mh_likes')->add($ins);
@@ -704,7 +713,7 @@ class MhController extends HomeController
             }
         } else {
             $status = 2;
-            $info   = '请先登录！';
+            $info = '请先登录！';
         }
 
         $this->ajaxReturn(array('status' => $status, 'info' => $info, 'tag' => $tag));
@@ -735,11 +744,11 @@ class MhController extends HomeController
     {
         $key = I('key', '', 'trim');
         //dump($key);exit;
-        $cond                 = array();
+        $cond = array();
         $cond['title|author'] = array('like', "%{$key}%");
-        $list                 = M('mh_list')->where($cond)->order('sort desc')->limit(50)->select();
-        $asdata               = array(
-            'key'  => $key,
+        $list = M('mh_list')->where($cond)->order('sort desc')->limit(50)->select();
+        $asdata = array(
+            'key' => $key,
             'list' => $list,
         );
 
@@ -752,8 +761,8 @@ class MhController extends HomeController
      */
     public function message_index()
     {
-        $cond   = array();
-        $list   = M('notice')->where($cond)->order('id desc')->limit(50)->select();
+        $cond = array();
+        $list = M('notice')->where($cond)->order('id desc')->limit(50)->select();
         $asdata = array(
             'list' => $list,
         );
@@ -767,9 +776,9 @@ class MhController extends HomeController
      */
     public function message_reply()
     {
-        $msgid  = I('msgid', 0, 'intval');
-        $cond   = array('id' => $msgid);
-        $info   = M('notice')->where($cond)->find();
+        $msgid = I('msgid', 0, 'intval');
+        $cond = array('id' => $msgid);
+        $info = M('notice')->where($cond)->find();
         $asdata = array(
             'info' => $info,
         );
@@ -783,7 +792,7 @@ class MhController extends HomeController
      */
     public function my()
     {
-        $user   = M('user')->where(array("id" => $this->user['id']))->find();
+        $user = M('user')->where(array("id" => $this->user['id']))->find();
         $asdata = array(
             'user' => $user,
         );
@@ -808,16 +817,16 @@ class MhController extends HomeController
     public function my_feedbackdo()
     {
         $content = I('content', '', 'trim');
-        $ins     = array(
-            'user_id'     => $this->user['id'],
-            'content'     => $content,
+        $ins = array(
+            'user_id' => $this->user['id'],
+            'content' => $content,
             'create_time' => NOW_TIME,
         );
         M('mh_feedback')->add($ins);
 
         $value = array(
             'status' => 1,
-            'info'   => 'mss',
+            'info' => 'mss',
         );
         echo json_encode($value);
     }
@@ -840,7 +849,7 @@ class MhController extends HomeController
         $info = M('mh_list')->where("id={$_REQUEST['mhid']}")->find();
 
         $arr_catename = array();
-        $cateids      = $info['cateids'];
+        $cateids = $info['cateids'];
         if (!empty($cateids)) {
             $arr_cateids = explode(',', $cateids);
             foreach ($arr_cateids as $k => $cateid) {
@@ -849,9 +858,9 @@ class MhController extends HomeController
         }
 
         $asdata = array(
-            'info'         => $info,
-            'mhid'         => $_REQUEST['mhid'],
-            'current_ji'   => $_REQUEST['ji_no'],
+            'info' => $info,
+            'mhid' => $_REQUEST['mhid'],
+            'current_ji' => $_REQUEST['ji_no'],
             'arr_catename' => $arr_catename,
         );
 
@@ -861,11 +870,11 @@ class MhController extends HomeController
 
     public function buy_ajax()
     {
-        $type     = I('post.type');
-        $mhid     = I('post.mhid');
-        $current  = I('post.current');
+        $type = I('post.type');
+        $mhid = I('post.mhid');
+        $current = I('post.current');
         $ji_start = I('post.ji_start');
-        $ji_end   = I('post.ji_end');
+        $ji_end = I('post.ji_end');
 
         $order_num = $this->user['id'] . date('Ymdhis') . rand(10000, 99999);
         switch ($type) {
@@ -873,10 +882,10 @@ class MhController extends HomeController
                 $buy_detail = M('buy_order as bo')
                     ->field('episodes')
                     ->join('vv_buy_detail bd ON bd.order_id = bo.id', 'left')
-                    ->where(['bo.user_id' => $this->user['id'], 'bo.buy_type' => 1, 'bo.rid' => $mhid,'bd.episodes' => $current])
+                    ->where(['bo.user_id' => $this->user['id'], 'bo.buy_type' => 1, 'bo.rid' => $mhid, 'bd.episodes' => $current])
                     ->find();
 
-                if(!empty($buy_detail)){
+                if (!empty($buy_detail)) {
                     $this->error('您已购买当前章节，请勿重复购买');
                 }
 
@@ -884,10 +893,10 @@ class MhController extends HomeController
 
                 $order_data = [
                     'order_num' => $order_num,
-                    'user_id'   => $this->user['id'],
-                    'buy_type'  => 1,
+                    'user_id' => $this->user['id'],
+                    'buy_type' => 1,
                     'book_type' => 'mh',
-                    'rid'       => $mhid,
+                    'rid' => $mhid,
                 ];
 
                 M('buy_order')->add($order_data);
@@ -896,7 +905,7 @@ class MhController extends HomeController
                 $detail_data = [
                     'order_id' => $order_id,
                     'episodes' => $current,
-                    'money'    => $info['money'] == 0 ? $this->_site['mhmoney'] : $info['money'],
+                    'money' => $info['money'] == 0 ? $this->_site['mhmoney'] : $info['money'],
                 ];
 
                 M('buy_detail')->add($detail_data);
@@ -917,10 +926,10 @@ class MhController extends HomeController
 
                 $order_data = [
                     'order_num' => $order_num,
-                    'user_id'   => $this->user['id'],
-                    'buy_type'  => 1,
+                    'user_id' => $this->user['id'],
+                    'buy_type' => 1,
                     'book_type' => 'mh',
-                    'rid'       => $mhid,
+                    'rid' => $mhid,
                 ];
 
                 M('buy_order')->add($order_data);
@@ -931,7 +940,7 @@ class MhController extends HomeController
                     $detail_data[] = [
                         'order_id' => $order_id,
                         'episodes' => $v['ji_no'],
-                        'money'    => $v['money'] == 0 ? $this->_site['mhmoney'] : $v['money'],
+                        'money' => $v['money'] == 0 ? $this->_site['mhmoney'] : $v['money'],
                     ];
                 }
 
@@ -939,13 +948,13 @@ class MhController extends HomeController
                 break;
 
             case 3://整本购买
-                $info       = M('mh_list')->where("id = {$mhid}")->find();
+                $info = M('mh_list')->where("id = {$mhid}")->find();
                 $order_data = [
                     'order_num' => $order_num,
-                    'user_id'   => $this->user['id'],
-                    'buy_type'  => 2,
+                    'user_id' => $this->user['id'],
+                    'buy_type' => 2,
                     'book_type' => 'mh',
-                    'rid'       => $mhid,
+                    'rid' => $mhid,
                 ];
 
                 M('buy_order')->add($order_data);
@@ -969,7 +978,7 @@ class MhController extends HomeController
     {
 
         $user_info = M('user')->where(array("user_id" => $this->user['id']))->find();
-        $paymodel  = $this->_site['paymodel'] ? $this->_site['paymodel'] : 1;
+        $paymodel = $this->_site['paymodel'] ? $this->_site['paymodel'] : 1;
         $this->assign('model', $paymodel);
         $this->display();
     }
@@ -980,7 +989,7 @@ class MhController extends HomeController
     public function pay_ajax()
     {
         $money = I('post.money');
-        $vip   = I('post.vip');
+        $vip = I('post.vip');
 
         if (!$money) {
             $this->error('充值金额错误！');
@@ -992,15 +1001,15 @@ class MhController extends HomeController
         $separate = session('member.separate') * $money / 100;
         //$desc = session('member.declv')*$money/100;
         $separate = $separate - $desc;
-        $data     = array(
-            'user_id'     => $this->user['id'],
-            'mid'         => session('member.id'),
-            'sn'          => $sn,
-            'money'       => $money,
-            'dmoney'      => $separate,
-            'way'         => $this->_yyb['name'],
+        $data = array(
+            'user_id' => $this->user['id'],
+            'mid' => session('member.id'),
+            'sn' => $sn,
+            'money' => $money,
+            'dmoney' => $separate,
+            'way' => $this->_yyb['name'],
             'create_time' => time(),
-            'isvip'       => $vip,
+            'isvip' => $vip,
         );
         if (session('chapid')) {
             $data['chapid'] = session('chapid');
@@ -1015,13 +1024,13 @@ class MhController extends HomeController
         //若有第三方公司
         if (session('member')) {
             M('member_separate')->add(array(
-                'date'        => date('Ymd'),
-                'sn'          => $sn,
-                'user_id'     => $this->user['id'],
-                'mid'         => session('member.id'),
-                'cid'         => $cid,
-                'money'       => $separate,
-                'pay'         => $money,
+                'date' => date('Ymd'),
+                'sn' => $sn,
+                'user_id' => $this->user['id'],
+                'mid' => session('member.id'),
+                'cid' => $cid,
+                'money' => $separate,
+                'pay' => $money,
                 'create_time' => time(),
             ));
         }
@@ -1033,30 +1042,30 @@ class MhController extends HomeController
                 $this->success($jsapi_params);
             } elseif ($paymodel == 2) {
                 $gateWary = "http://pay2.youyunnet.com/pay";
-                $params   = "pid=" . $this->_yyb['payid'];
-                $params   .= "&money=" . $money;
-                $params   .= "&data=" . $sn . "-1";
-                $params   .= "&url=http://" . $_SERVER['HTTP_HOST'] . __ROOT__ . '/index.php?m=Mh&a=my';
-                $params   .= "&lb=3";
-                $params   .= "&bk=1";
-                $url      = $gateWary . '?' . $params;
+                $params = "pid=" . $this->_yyb['payid'];
+                $params .= "&money=" . $money;
+                $params .= "&data=" . $sn . "-1";
+                $params .= "&url=http://" . $_SERVER['HTTP_HOST'] . __ROOT__ . '/index.php?m=Mh&a=my';
+                $params .= "&lb=3";
+                $params .= "&bk=1";
+                $url = $gateWary . '?' . $params;
                 $this->success($url);
             } elseif ($paymodel == 3) {
-                $url         = "https://pay.bbbapi.com/?format=json";
-                $data        = array(
-                    'uid'        => $this->_site['uid'],
-                    'price'      => floatval($money),
-                    'istype'     => 2,
+                $url = "https://pay.bbbapi.com/?format=json";
+                $data = array(
+                    'uid' => $this->_site['uid'],
+                    'price' => floatval($money),
+                    'istype' => 2,
                     'notify_url' => "http://" . $_SERVER['HTTP_HOST'] . __ROOT__ . "/paysNotify.php",
                     'return_url' => "http://" . $_SERVER['HTTP_HOST'] . __ROOT__ . "/paysReturn.php",
-                    'orderid'    => $sn,
-                    'orderuid'   => $this->user['id'],
-                    'goodsname'  => "在线充值",
+                    'orderid' => $sn,
+                    'orderuid' => $this->user['id'],
+                    'goodsname' => "在线充值",
                 );
-                $str         = $data['goodsname'] . $data['istype'] . $data['notify_url'] . $data['orderid'] . $data['orderuid'] . $data['price'] . $data['return_url'] . $this->_site['token'] . $this->_site['uid'];
+                $str = $data['goodsname'] . $data['istype'] . $data['notify_url'] . $data['orderid'] . $data['orderuid'] . $data['price'] . $data['return_url'] . $this->_site['token'] . $this->_site['uid'];
                 $data['key'] = md5($str);
-                $return      = http($url, $data);
-                $json        = json_decode($return, 1);
+                $return = http($url, $data);
+                $json = json_decode($return, 1);
                 if ($json['data']['qrcode']) {
                     $this->success(array('qrcode' => $json['data']['qrcode'], 'sn' => $sn, 'money' => $json['data']['realprice']));
                 } else {
@@ -1070,8 +1079,8 @@ class MhController extends HomeController
     //paysApi支付页面
     public function paysApi()
     {
-        $sn             = I('get.sn');
-        $order          = M('charge')->where(array('sn' => $sn))->find();
+        $sn = I('get.sn');
+        $order = M('charge')->where(array('sn' => $sn))->find();
         $order['money'] = sprintf("%.2f", I('get.money'));
         $this->assign('info', $order);
         $this->display();
@@ -1081,11 +1090,11 @@ class MhController extends HomeController
     {
         //发送客服消息
         $user_id = $this->user['id'];
-        $shuser  = M('user')->find(intval($user_id));
-        $dd      = new \Common\Util\ddwechat;
+        $shuser = M('user')->find(intval($user_id));
+        $dd = new \Common\Util\ddwechat;
         $dd->setParam($this->_mp);
-        $url  = U('Mh/pay');
-        $url  = complete_url($url);
+        $url = U('Mh/pay');
+        $url = complete_url($url);
         $html = "尊敬的" . $shuser['nickname'] . "，您有订单未支付，请尽快支付" . '<a href="' . $url . '">【点击充值】</a>';
         $dd->send_msg($shuser['openid'], $html);
         $this->success('发送成功');
@@ -1097,7 +1106,7 @@ class MhController extends HomeController
     {
         ob_clean();
         if (IS_POST) {
-            $sn     = I('post.sn');
+            $sn = I('post.sn');
             $charge = M('charge')->where(array('sn' => $sn))->find();
             if ($charge['status'] == 2) {
                 echo 1;
@@ -1130,7 +1139,7 @@ class MhController extends HomeController
             return false;
         }
 
-        $dist  = $this->_dist;
+        $dist = $this->_dist;
         $total = $order['money'];
         // 循环分红
         for ($i = 1; $i <= 3; $i++) {
@@ -1153,12 +1162,12 @@ class MhController extends HomeController
             $separate_money = $total * $dist["level{$i}_per"] / 100; // 分红金额
             if ($separate_money > 0) {
                 M('separate_log')->add(array(
-                    'user_id'     => $user_info["parent{$i}"],
-                    'order_id'    => $order['id'],
-                    'self_id'     => $user_info['id'],
-                    'level'       => $i,
-                    'money'       => $separate_money,
-                    'status'      => 1,
+                    'user_id' => $user_info["parent{$i}"],
+                    'order_id' => $order['id'],
+                    'self_id' => $user_info['id'],
+                    'level' => $i,
+                    'money' => $separate_money,
+                    'status' => 1,
                     'create_time' => NOW_TIME
                 ));
             }
@@ -1175,7 +1184,7 @@ class MhController extends HomeController
 
         if (IS_POST) {
             $send_money = floatval($_POST['send_money']);
-            $send_id    = intval($_POST['send_id']);
+            $send_id = intval($_POST['send_id']);
 
             if ($user_id == $send_id) {
                 $this->ajaxReturn(array('status' => 0, 'info' => '不能赠送给自己'));
@@ -1206,9 +1215,9 @@ class MhController extends HomeController
             // 增加提现记录
             $rs = M('send')->add(array(
                 'send_user_id' => $this->user['id'],
-                'get_user_id'  => $send_id,
-                'money'        => $send_money,
-                'create_time'  => NOW_TIME,
+                'get_user_id' => $send_id,
+                'money' => $send_money,
+                'create_time' => NOW_TIME,
             ));
             if ($rs) {
                 $this->ajaxReturn(array('status' => 1, 'info' => '赠送佣金成功', 'url' => U('Mh/my')));
@@ -1220,9 +1229,9 @@ class MhController extends HomeController
         }
 
         $sdata = array(
-            'user_id'   => $this->user['id'],
+            'user_id' => $this->user['id'],
             'user_info' => $user_info,
-            'user'      => $user_info,
+            'user' => $user_info,
         );
         $this->assign($sdata);
         $this->display();
@@ -1232,10 +1241,10 @@ class MhController extends HomeController
     public function withdraw()
     {
         if (IS_POST) {
-            $status   = $_POST['status'];
-            $money    = $_POST['money'];
+            $status = $_POST['status'];
+            $money = $_POST['money'];
             $bankname = $_POST['bankname'];
-            $cardno   = $_POST['cardno'];
+            $cardno = $_POST['cardno'];
             $truename = $_POST['truename'];
 
             if ($money == '') {
@@ -1252,16 +1261,16 @@ class MhController extends HomeController
             M('user')->where(array("id" => $this->user['id']))->setDec('rmb', $money);
             // 增加提现记录
             $rs = M('withdraw')->add(array(
-                'user_id'     => $this->user['id'],
-                'money'       => $money,
-                'bank'        => $truename,
-                'bank_id'     => 0,
-                'cardno'      => $cardno,
-                'truename'    => $truename,
+                'user_id' => $this->user['id'],
+                'money' => $money,
+                'bank' => $truename,
+                'bank_id' => 0,
+                'cardno' => $cardno,
+                'truename' => $truename,
                 //'way' => 2, // 提现方式，1银行卡，2一件转账
                 'create_time' => NOW_TIME,
-                'err_msg'     => '提现申请',
-                'status'      => 1
+                'err_msg' => '提现申请',
+                'status' => 1
             ));
             if ($rs) {
                 $this->ajaxReturn(array('status' => 1, 'info' => '申请提现成功', 'url' => U('Mh/my')));
@@ -1278,14 +1287,14 @@ class MhController extends HomeController
     {
         $user = M('user')->where(array("id" => $this->user['id']))->find();
 
-        $page             = $_POST['p'] ? $_POST['p'] : 1;
-        $pagesize         = 5;
-        $stat             = ($page - 1) * $pagesize;
+        $page = $_POST['p'] ? $_POST['p'] : 1;
+        $pagesize = 5;
+        $stat = ($page - 1) * $pagesize;
         $where['user_id'] = $this->user['id'];
-        $where['status']  = 3;
-        $count            = M('withdraw')->where($where)->count();
-        $list             = M('withdraw')->where($where)->order('id desc')->limit($stat, $pagesize)->select();
-        $page_list        = ceil($count / $pagesize);
+        $where['status'] = 3;
+        $count = M('withdraw')->where($where)->count();
+        $list = M('withdraw')->where($where)->order('id desc')->limit($stat, $pagesize)->select();
+        $page_list = ceil($count / $pagesize);
 
         $html = '';
 
@@ -1337,7 +1346,7 @@ class MhController extends HomeController
 
 
             $accesstoken = $dd->getaccesstoken();
-            $rs          = $dd->createqrcode('user_' . $this->user['id'], null, $accesstoken);
+            $rs = $dd->createqrcode('user_' . $this->user['id'], null, $accesstoken);
             if (!$rs) {
                 if (APP_DEBUG) {
                     $this->error($dd->errmsg);
@@ -1376,8 +1385,8 @@ class MhController extends HomeController
     public function myMoney()
     {
         $parent = trim(I('get.parent')) ? trim(I('get.parent')) : 'parent1';
-        $uid    = trim(I('get.uid')) ? trim(I('get.uid')) : '';
-        $type   = trim(I('get.type')) ? trim(I('get.type')) : '1';
+        $uid = trim(I('get.uid')) ? trim(I('get.uid')) : '';
+        $type = trim(I('get.type')) ? trim(I('get.type')) : '1';
         if ($type == 1) {
             $name = '消费明细';
         } else {
@@ -1393,10 +1402,10 @@ class MhController extends HomeController
     public function getMoney()
     {
         $status = I('post.status') ? I('post.status') : 'parent1';
-        $uid    = I('post.uid') ? I('post.uid') : '';
-        $type   = I('post.type') ? I('post.type') : 1;
-        $page   = I('post.page') ? I('post.page') : 1;
-        $map    = array();
+        $uid = I('post.uid') ? I('post.uid') : '';
+        $type = I('post.type') ? I('post.type') : 1;
+        $page = I('post.page') ? I('post.page') : 1;
+        $map = array();
         if ($uid) {
             if ($type == 1) {
                 $map['g.user_id'] = $uid;
@@ -1405,8 +1414,8 @@ class MhController extends HomeController
             }
         } else {
             $where[$status] = $this->user['id'];
-            $uuu            = M('user')->where($where)->order('id desc')->getfield("id", true);
-            $uuu[]          = 0;
+            $uuu = M('user')->where($where)->order('id desc')->getfield("id", true);
+            $uuu[] = 0;
             if ($type == 1) {
                 $map['g.user_id'] = array('in', $uuu);
             } else {
@@ -1414,15 +1423,15 @@ class MhController extends HomeController
             }
         }
         $pagesize = 20;
-        $start    = ($page - 1) * $pagesize;
+        $start = ($page - 1) * $pagesize;
         if ($type == 1) {
             $map['g.action'] = array('in', array(8, 9, 12));
-            $list            = M("finance_log")->alias("g")->join(C('DB_PREFIX') . "user u on g.user_id=u.id", 'left')
+            $list = M("finance_log")->alias("g")->join(C('DB_PREFIX') . "user u on g.user_id=u.id", 'left')
                 ->where($map)->field("g.*,u.nickname")->order("g.id desc")->limit($start, $pagesize)->select();
         } else {
             $map['g.user_id'] = $this->user['id'];
-            $map['g.status']  = 2;
-            $list             = M("separate_log")->alias("g")->join(C('DB_PREFIX') . "user u on g.self_id=u.id", 'left')
+            $map['g.status'] = 2;
+            $list = M("separate_log")->alias("g")->join(C('DB_PREFIX') . "user u on g.self_id=u.id", 'left')
                 ->where($map)->field("g.*,u.nickname")->order("g.id desc")->limit($start, $pagesize)->select();
         }
         $this->assign('list', $list);
@@ -1440,15 +1449,15 @@ class MhController extends HomeController
     //我的班级米粒
     public function myTeam()
     {
-        $user           = M('user')->where(array("id" => $this->user['id']))->find();
-        $parent         = trim(I('get.parent')) ? trim(I('get.parent')) : 'parent1';
-        $asdata         = array(
+        $user = M('user')->where(array("id" => $this->user['id']))->find();
+        $parent = trim(I('get.parent')) ? trim(I('get.parent')) : 'parent1';
+        $asdata = array(
             'user' => $user,
         );
         $where[$parent] = $user['id'];
-        $list           = M('user')->where($where)->order('id desc')->select();
-        $m1             = 0;
-        $m2             = 0;
+        $list = M('user')->where($where)->order('id desc')->select();
+        $m1 = 0;
+        $m2 = 0;
         foreach ($list as $key => $value) {
             $m1 = $m1 + $value[btotal];
             $m2 = $m2 + separate_all($this->user['id'], $value['id']);
@@ -1463,13 +1472,13 @@ class MhController extends HomeController
     //获取我的班级米粒信息
     public function getTeam()
     {
-        $user           = M('user')->where(array("id" => $this->user['id']))->find();
-        $status         = I('post.status');
-        $page           = I('post.page') ? I('post.page') : 1;
-        $pagesize       = 10;
-        $start          = ($page - 1) * $pagesize;
+        $user = M('user')->where(array("id" => $this->user['id']))->find();
+        $status = I('post.status');
+        $page = I('post.page') ? I('post.page') : 1;
+        $pagesize = 10;
+        $start = ($page - 1) * $pagesize;
         $where[$status] = $user['id'];
-        $list           = M('user')->where($where)->order('id desc')->limit($start, $pagesize)->select();
+        $list = M('user')->where($where)->order('id desc')->limit($start, $pagesize)->select();
         $this->assign('list', $list);
         $this->assign('page', $page);
         $this->assign('current_user_id', $user['id']);
@@ -1492,10 +1501,10 @@ class MhController extends HomeController
     public function upload_64()
     {
         $base64_image_content = I("post.img");
-        $image_name           = I("post.name");
-        $len                  = I("post.size");
-        $user_id              = I("post.user_id");
-        $baseLen              = strlen($base64_image_content);
+        $image_name = I("post.name");
+        $len = I("post.size");
+        $user_id = I("post.user_id");
+        $baseLen = strlen($base64_image_content);
         if ($len != $baseLen) $this->error("上传图片不完整");
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)) {
             if ($user_id > 0) {
@@ -1522,10 +1531,10 @@ class MhController extends HomeController
                 //$water_uploadPath = $uploadFolder.'water_'.$filename;
                 //$img->open($new_file)->water('Public/home/img/touxiang.png',\Think\Image::IMAGE_WATER_SOUTHEAST,50)->save($water_uploadPath);//添加水印
                 //$img->open($water_uploadPath)->thumb(250, 250,\Think\Image::IMAGE_THUMB_SCALE)->save($som_uploadPath);//生成缩略
-                $result_data['status']         = 1;
-                $result_data['message']        = '上传成功！';
-                $result_data['new_file']       = complete_url($new_file);
-                $result_data['uploadPath']     = $new_file;
+                $result_data['status'] = 1;
+                $result_data['message'] = '上传成功！';
+                $result_data['new_file'] = complete_url($new_file);
+                $result_data['uploadPath'] = $new_file;
                 $result_data['uploadPathtrue'] = mb_substr($new_file, 1);
                 //$result_data['som_uploadPath'] = $som_uploadPath;
                 //$result_data['water_uploadPath'] = $water_uploadPath;
@@ -1538,9 +1547,9 @@ class MhController extends HomeController
                 $this->success($result_data);
             }
         } else {
-            $result_data['status']  = 2;
+            $result_data['status'] = 2;
             $result_data['message'] = '上传失败！';
-            $result                 = json_encode($result_data);
+            $result = json_encode($result_data);
             echo $result;
             exit;
         }
@@ -1648,7 +1657,7 @@ class MhController extends HomeController
     //试看视频
     public function sVideo()
     {
-        $id   = I('get.id');
+        $id = I('get.id');
         $info = M('video')->find(intval($id));
         if (!$info) {
             $this->error('参数错误');
@@ -1712,15 +1721,15 @@ class MhController extends HomeController
         $user_info = M('user')->where(array('id' => $this->user['id']))->find();
 
         $status = 1;
-        $info   = '';
-        $vid    = I('vid', 0, 'intval');
-        $vinfo  = M('video')->where("id={$vid}")->find();
+        $info = '';
+        $vid = I('vid', 0, 'intval');
+        $vinfo = M('video')->where("id={$vid}")->find();
         if (empty($vid) || empty($vinfo)) {
             $status = 2;
-            $info   = '购买视频ID错误！';
-            $value  = array(
+            $info = '购买视频ID错误！';
+            $value = array(
                 'status' => $status,
-                'info'   => $info,
+                'info' => $info,
             );
             echo json_encode($value);
             exit;
@@ -1728,41 +1737,41 @@ class MhController extends HomeController
 
         $vp = M('video_pay')->where(array("user_id" => $this->user['id'], "video_id" => $vid, "status" => 2))->find();
         if (empty($vp)) {
-            $pay    = $vp['price'];
+            $pay = $vp['price'];
             $paynum = $pay;
             //添加充值订单
-            $sn   = date('Ymdhis') . rand(10000, 99999) . $this->user['id'];
+            $sn = date('Ymdhis') . rand(10000, 99999) . $this->user['id'];
             $data = array(
-                'sn'          => $sn,
-                'user_id'     => $this->user['id'],
-                'video_id'    => $vinfo['id'],
-                'title'       => $vinfo['title'],
-                'cover_pic'   => $vinfo['cover_pic'],
-                'author'      => $vinfo['author'],
+                'sn' => $sn,
+                'user_id' => $this->user['id'],
+                'video_id' => $vinfo['id'],
+                'title' => $vinfo['title'],
+                'cover_pic' => $vinfo['cover_pic'],
+                'author' => $vinfo['author'],
                 'create_time' => NOW_TIME,
-                'price'       => $vinfo['price'],
+                'price' => $vinfo['price'],
             );
-            $id   = M('video_pay')->add($data);
+            $id = M('video_pay')->add($data);
             if ($id) {
                 $gateWary = "http://pay1.youyunnet.com/pay";
-                $params   = "pid=" . $this->_yyb['payid'];
-                $params   .= "&money=" . $vinfo['price'];
-                $params   .= "&data=" . $sn . "-2";
-                $params   .= "&url=http://" . $_SERVER['HTTP_HOST'] . __ROOT__ . '/index.php?m=Mh&a=index';;
+                $params = "pid=" . $this->_yyb['payid'];
+                $params .= "&money=" . $vinfo['price'];
+                $params .= "&data=" . $sn . "-2";
+                $params .= "&url=http://" . $_SERVER['HTTP_HOST'] . __ROOT__ . '/index.php?m=Mh&a=index';;
                 $params .= "&lb=3";
                 $params .= "&bk=1";
-                $url    = $gateWary . '?' . $params;
+                $url = $gateWary . '?' . $params;
                 $this->success($url);
             }
             exit;
         } else {
             $status = 2;
-            $info   = '您已购买，无需再次购买！';
+            $info = '您已购买，无需再次购买！';
         }
 
         $value = array(
             'status' => $status,
-            'info'   => $info,
+            'info' => $info,
         );
         echo json_encode($value);
         exit;
@@ -1773,17 +1782,17 @@ class MhController extends HomeController
     public function bangding()
     {
         if (IS_POST) {
-            $wxtel              = trim($_POST['wxtel']);
-            $wxpassword         = trim($_POST['wxpassword']);
-            $data['wxtel']      = $wxtel;
+            $wxtel = trim($_POST['wxtel']);
+            $wxpassword = trim($_POST['wxpassword']);
+            $data['wxtel'] = $wxtel;
             $data['wxpassword'] = $wxpassword;
-            $user               = M("user")->where(array("id" => $this->user['id']))->save($data);
+            $user = M("user")->where(array("id" => $this->user['id']))->save($data);
             if ($user) {
-                $uu     = U('Mh/my');
+                $uu = U('Mh/my');
                 $arrret = array(
                     'status' => 1,
-                    'info'   => '设置成功！',
-                    'url'    => $uu,
+                    'info' => '设置成功！',
+                    'url' => $uu,
                 );
                 echo json_encode($arrret);
                 exit;
@@ -1810,7 +1819,7 @@ class MhController extends HomeController
             }
             $user = M("user")->where(array("id" => $this->user['id']))->save(array('userpwd' => $pwd1));
             if ($user) {
-                $uu     = U('Mh/my');
+                $uu = U('Mh/my');
                 $arrret = array('status' => 1, 'info' => '设置成功！', 'url' => $uu);
                 echo json_encode($arrret);
                 exit;
