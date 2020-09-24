@@ -9,20 +9,22 @@ class WithdrawController extends AdminController {
 		}
 		
 		if(!empty($_GET['status'])){
-			$where['status'] = intval($_GET['status']);
+			$where['w.status'] = intval($_GET['status']);
 		}
 		if(!empty($_GET['time1']) && !empty($_GET['time2'])){
-			$where['create_time'] = array(
+			$where['w.create_time'] = array(
 				array('gt', strtotime($_GET['time1'])),
 				array('lt', strtotime($_GET['time2'])+86400)
 			);
 		}elseif(!empty($_GET['time1'])){
-			$where['create_time'] = array('gt', strtotime($_GET['time1']));
+			$where['w.create_time'] = array('gt', strtotime($_GET['time1']));
 		}elseif(!empty($_GET['time2'])){
-			$where['create_time'] = array('lt', strtotime($_GET['time2'])+86400);
+			$where['w.create_time'] = array('lt', strtotime($_GET['time2'])+86400);
 		}
-		
-		$list = $this -> _get_list('withdraw', $where);
+
+		$join = 'vv_member as m on m.id = w.mid';
+		$field = 'w.*,m.name,m.zfb';
+		$list = $this -> _get_list('m_withdraw as w',$field,$join, $where,'w.create_time desc');
 		
 		// 银行转账才需要显示银行卡信息
 		if($this -> _site['withdraw'] == 1){

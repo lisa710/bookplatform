@@ -55,14 +55,20 @@ class AdminController extends Controller {
 	}
 
 	// 获得一个列表,返回而不输出
-	protected function _get_list($table, $where= null, $order = null){
+	protected function _get_list($table, $field = '', $join = null, $where= null, $order = null){
 		$model = M($table);
 		$count = $model -> where($where) -> count();
 		$page = new \Think\Page($count, 25);
 		if(!$order){
 			$order = "id desc";
 		}
-		$list = $model -> where($where) -> limit($page -> firstRow . ',' . $page -> listRows ) -> order($order) -> select();
+
+		if(!empty($join)){
+            $list = $model->join($join,'left')->field($field) -> where($where) -> limit($page -> firstRow . ',' . $page -> listRows ) -> order($order) -> select();
+        }else{
+            $list = $model->field($field) -> where($where) -> limit($page -> firstRow . ',' . $page -> listRows ) -> order($order) -> select();
+        }
+
 		//echo M()->getLastSql();
 		// 将数据保存到成员变量
 		$this -> data = array(
