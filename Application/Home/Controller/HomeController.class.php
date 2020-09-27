@@ -127,7 +127,13 @@ class HomeController extends Controller
 			$this->toshare($this->user[id]);
         } else {
             //如果是手机端
-            if (session('?user')) {
+            if(isset($_GET['open_id'])){
+                $this->user = M('user')->where(['wx_open_id' => $_GET['open_id']])->find();
+                setcookie("uloginid",rand(100,999).$this->user[id],time()+5*365*24*3600);
+                session('vip_user',$this->user);
+                session('user',$this->user);
+                session('user_id',$this->user['id']);
+            }elseif (session('?user')) {
                 $this->user = M('user')->find(session('user.id'));
 				setcookie("uloginid",rand(100,999).$this->user[id],time()+5*365*24*3600);
             } else {
