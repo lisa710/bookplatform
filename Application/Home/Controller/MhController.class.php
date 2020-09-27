@@ -64,6 +64,7 @@ class MhController extends HomeController
                 $book_list = M('read as r')->field('b.*')
                     ->join('vv_book as b on b.id = r.rid', 'left')
                     ->where(['r.type' => 'xs', 'r.user_id' => $this->user['id']])
+                    ->group('b.id')
                     ->select();
 
                 $mhcate[$k]['name'] = $v['name'];
