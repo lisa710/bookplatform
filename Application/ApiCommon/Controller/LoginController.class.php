@@ -38,7 +38,7 @@ class LoginController extends BaseController
                 M('follow')->add(['user_id' => $is_sign['id'], 'member_id' => $member_id, 'create_time' => time()]);
             }
         }
-        $this->response(200, '成功');
+        $this->response(200, '成功', ['user_id' => $is_sign['id']]);
     }
 
 }
