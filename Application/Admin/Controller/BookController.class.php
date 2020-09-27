@@ -35,6 +35,9 @@ class BookController extends AdminController
             unset($_POST['bookcate']);
             $_POST['bookcate'] = $bookcate;
 
+            if($_POST['free_type'] == 2 && $_POST['whole_money'] <= 0){
+                $this->error('付费时，整书购买价格需大于0');
+            }
             // 修改
             if (isset($_GET['id'])) {
                 $_POST['update_time'] = NOW_TIME;

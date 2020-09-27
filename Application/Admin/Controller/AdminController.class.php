@@ -55,7 +55,7 @@ class AdminController extends Controller {
 	}
 
 	// 获得一个列表,返回而不输出
-	protected function _get_list($table, $field = '', $join = null, $where= null, $order = null){
+	protected function _get_list($table, $where= null, $order = null, $field = '', $join = null){
 		$model = M($table);
 		$count = $model -> where($where) -> count();
 		$page = new \Think\Page($count, 25);

@@ -94,7 +94,7 @@
 		if(!$money || $money<=0){
 			$money = $_site['mhmoney'];
 		}
-		$money = intval($money);
+		$money = $money;
 		$read = M('read')->where(array('episodes'=>"$vo",'rid'=>$info['id'],'user_id'=>$user['id'],'type'=>'mh'))->find();
 
 		$buy_whole = M('buy_order as bo')
@@ -142,7 +142,6 @@
 					</a>
 				</div>
 			</if>
-
 		</if>
 
 
@@ -221,39 +220,39 @@
     </div>
 </div>
 
-<div class="bm-box mt-10" style="margin-bottom:3rem;">
-	<div class="bubble">
-		<span>打赏</span>
-		<hr>
-		<span class="sum_of_tip">{$info['send']|}书币</span>
-	</div>
-	<a class="btn-tip-menu" href="javascript:;">打赏</a>
-	<div class="tip-history">
-			<h6 class="title">打赏记录</h6>
-			<div class="no-data" style="display: none;text-align:center;font-size:16px">土豪，求打赏</div>
-			<div class="rows">
-				
-			</div>
-		</div>
-		<a class="moreBtn" href="javascript:;" onclick="LoadSendMore();">查看更多</a>		
-</div>
-<div class="ds">
-	<div class="msk" onclick="dsHide();"></div>
-	<div class="txt">
-		<div class="title">打赏</div>
-		<div class="send">
-			<ul>
-				<foreach name="_send" item="v" key="k">
-					<li _sid="{$k}">
-						<img src="{$v.pic}" />
-						<span>{$v.money}书币</span>
-					</li>
-				</foreach>
-			</ul>
-		</div>
-		<div class="dbtn" onclick="dsHide();">取消</div>
-	</div>
-</div>
+<!--<div class="bm-box mt-10" style="margin-bottom:3rem;">-->
+	<!--<div class="bubble">-->
+		<!--<span>打赏</span>-->
+		<!--<hr>-->
+		<!--<span class="sum_of_tip">{$info['send']|}书币</span>-->
+	<!--</div>-->
+	<!--<a class="btn-tip-menu" href="javascript:;">打赏</a>-->
+	<!--<div class="tip-history">-->
+			<!--<h6 class="title">打赏记录</h6>-->
+			<!--<div class="no-data" style="display: none;text-align:center;font-size:16px">土豪，求打赏</div>-->
+			<!--<div class="rows">-->
+				<!---->
+			<!--</div>-->
+		<!--</div>-->
+		<!--<a class="moreBtn" href="javascript:;" onclick="LoadSendMore();">查看更多</a>		-->
+<!--</div>-->
+<!--<div class="ds">-->
+	<!--<div class="msk" onclick="dsHide();"></div>-->
+	<!--<div class="txt">-->
+		<!--<div class="title">打赏</div>-->
+		<!--<div class="send">-->
+			<!--<ul>-->
+				<!--<foreach name="_send" item="v" key="k">-->
+					<!--<li _sid="{$k}">-->
+						<!--<img src="{$v.pic}" />-->
+						<!--<span>{$v.money}书币</span>-->
+					<!--</li>-->
+				<!--</foreach>-->
+			<!--</ul>-->
+		<!--</div>-->
+		<!--<div class="dbtn" onclick="dsHide();">取消</div>-->
+	<!--</div>-->
+<!--</div>-->
 
 
 <script type="text/javascript">

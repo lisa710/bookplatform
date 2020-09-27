@@ -155,7 +155,17 @@ class BookController extends HomeController
             redirect(U('Public/mbover', array('status' => $binfo['status'], 'type' => 'xs')));
             exit;
         }
+
         $userinfo = M('user')->where(array("user_id" => $this->user['id']))->find();
+
+        //查看该是否整本购买或购买过本小说的章节
+        $map        = "bo.buy_type = 2 OR (bo.buy_type = 1 AND bd.episodes = '{$ji_no}')";
+        $buy_record = M('buy_order as bo')
+            ->field('bd.*')
+            ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+            ->where(array('bo.rid' => $bid, 'bo.user_id' => $this->user['id'], 'bo.book_type' => 'xs'))
+            ->where($map)
+            ->select();
 
         //查看该用户是否看过本小说的章节
         $read = M('read')->where(array('rid' => $bid, 'user_id' => $this->user['id'], 'episodes' => $ji_no, 'type' => 'xs'))->find();
@@ -164,32 +174,35 @@ class BookController extends HomeController
         $reads = M('read')->where(array('rid' => $bid, 'user_id' => $this->user['id'], 'type' => 'xs'))->find();
 
         if ($ji_no >= $binfo["pay_num"] && $binfo['free_type'] == 2 && $this->user['vip'] == 0 && $binfo['pay_num'] > 0) { //如果集大于付费级别
-            //查看这集是否阅读过？
-            if (!$read) {
-                $money = M('book_episodes')->where(array('ji_no' => $ji_no, 'bid' => $bid))->getField("money");
-                if (!$money || $money <= 0) {
-                    $money = $this->_site['xsmoney'];
-                }
-                if ($this->user['money'] < $money) {
-                    $this->error('您的账户书币不足！', U('Mh/pay'));
-                }
-                M('user')->where(array('id' => $this->user['id']))->setDec("money", $money);
-
-                //查询是否有充值记录
-                $read_charge = M('read_charge')->where(array('user_id' => $this->user['id'], 'rid' => $bid, 'type' => 'xs'))->find();
-                if (!$read_charge) {
-                    M('read_charge')->add(array(
-                        'user_id'     => $this->user['id'],
-                        'rid'         => $bid,
-                        'type'        => 'xs',
-                        'create_time' => NOW_TIME,
-                    ));
-                    M('book')->where(array('id' => $bid))->setInc('chargenum', 1);
-                }
-                M('book')->where(array('id' => $bid))->setInc('chargemoney', $money);
-
-                flog($this->user['id'], "money", "-" . $money, 8);
+            if (!$buy_record) {
+                redirect(U('Mh/buy', ['type' => 'xs', 'rid' => $bid, 'ji_no' => $ji_no]));
             }
+            //查看这集是否阅读过？
+//            if (!$read) {
+//                $money = M('book_episodes')->where(array('ji_no' => $ji_no, 'bid' => $bid))->getField("money");
+//                if (!$money || $money <= 0) {
+//                    $money = $this->_site['xsmoney'];
+//                }
+//                if ($this->user['money'] < $money) {
+//                    $this->error('您的账户书币不足！', U('Mh/pay'));
+//                }
+//                M('user')->where(array('id' => $this->user['id']))->setDec("money", $money);
+//
+//                //查询是否有充值记录
+//                $read_charge = M('read_charge')->where(array('user_id' => $this->user['id'], 'rid' => $bid, 'type' => 'xs'))->find();
+//                if (!$read_charge) {
+//                    M('read_charge')->add(array(
+//                        'user_id'     => $this->user['id'],
+//                        'rid'         => $bid,
+//                        'type'        => 'xs',
+//                        'create_time' => NOW_TIME,
+//                    ));
+//                    M('book')->where(array('id' => $bid))->setInc('chargenum', 1);
+//                }
+//                M('book')->where(array('id' => $bid))->setInc('chargemoney', $money);
+//
+//                flog($this->user['id'], "money", "-" . $money, 8);
+//            }
         }
 
         if (!$read) {
@@ -505,36 +518,37 @@ class BookController extends HomeController
         $book_list = M('buy_order as bo')
             ->field("bo.*,min(bd.episodes) as start,max(bd.episodes) as end,sum(bd.money) as money,
                             bl.title,bl.cover_pic,mb.name as member_name")
-            ->join('vv_buy_detail as bd ON bd.order_id = bo.id','left')
-            ->join('vv_book AS bl ON bl.id = bo.rid','left')
-            ->join('vv_member AS mb ON mb.id = bl.member_id','left')
-            ->where(['bo.user_id'=>$this->user['id'],'bo.book_type'=>'xs'])
+            ->join('vv_buy_detail as bd ON bd.order_id = bo.id', 'left')
+            ->join('vv_book AS bl ON bl.id = bo.rid', 'left')
+            ->join('vv_member AS mb ON mb.id = bl.member_id', 'left')
+            ->where(['bo.user_id' => $this->user['id'], 'bo.book_type' => 'xs'])
             ->group('bo.id')
             ->select();
 
         $mh_list = M('buy_order as bo')
             ->field("bo.*,min(bd.episodes) as start,max(bd.episodes) as end,sum(bd.money) as money,
                             ml.title,ml.cover_pic,mb.name as member_name")
-            ->join('vv_buy_detail as bd ON bd.order_id = bo.id','left')
-            ->join('vv_mh_list AS ml ON ml.id = bo.rid','left')
-            ->join('vv_member AS mb ON mb.id = ml.member_id','left')
-            ->where(['bo.user_id'=>$this->user['id'],'bo.book_type'=>'mh'])
+            ->join('vv_buy_detail as bd ON bd.order_id = bo.id', 'left')
+            ->join('vv_mh_list AS ml ON ml.id = bo.rid', 'left')
+            ->join('vv_member AS mb ON mb.id = ml.member_id', 'left')
+            ->where(['bo.user_id' => $this->user['id'], 'bo.book_type' => 'mh'])
             ->group('bo.id')
             ->select();
 
-        $list = array_merge($book_list,$mh_list);
-        $list = $this->arraySort($list,'create_time','desc');
+        $list = array_merge($book_list, $mh_list);
+        $list = $this->arraySort($list, 'create_time', 'desc');
 
         $this->success($list);
     }
 
-    function arraySort($arr, $keys, $type = 'asc') {
+    function arraySort($arr, $keys, $type = 'asc')
+    {
         $keysvalue = $new_array = array();
-        foreach ($arr as $k => $v){
+        foreach ($arr as $k => $v) {
             $keysvalue[$k] = $v[$keys];
         }
 
-        $type == 'asc'?asort($keysvalue):arsort($keysvalue);
+        $type == 'asc' ? asort($keysvalue) : arsort($keysvalue);
         foreach ($keysvalue as $k => $v) {
             $new_array[$k] = $arr[$k];
         }
@@ -635,8 +649,8 @@ class BookController extends HomeController
                                 $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '话';
                             }
                         } else {
-                            $html  .= '<div class="item">';
-                            $html  .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
+                            $html .= '<div class="item">';
+                            $html .= '<a href="' . U('Mh/inforedit', array('mhid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '话';
                         }
                     }
 
@@ -645,9 +659,9 @@ class BookController extends HomeController
                     } else {
                         if ($buy_episodes) {
                             $html .= '<span></span>';
-                        } elseif($i >= $info['pay_num'] && $info['pay_num'] > 0 && $info['free_type'] == 2) {
+                        } elseif ($i >= $info['pay_num'] && $info['pay_num'] > 0 && $info['free_type'] == 2) {
                             $html .= '<span>' . $money . '元</span>';
-                        }else{
+                        } else {
                             $html .= '<span></span>';
                         }
                     }

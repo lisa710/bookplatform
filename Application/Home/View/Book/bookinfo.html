@@ -104,28 +104,60 @@
     </div>
     <div class="list" id="html_box">
     <volist name="huas" id="vo">
-	<?php 
+	<?php
 		$money = M('book_episodes')->where(array('ji_no'=>$vo,'bid'=>$info['id']))->getField('money');
 		if(!$money || $money<=0){
 			$money = $_site['xsmoney'];
 		}
-		$money = intval($money);
-		
+		$money = $money;
 		$read = M('book_read')->where(array('ji_no'=>$vo,'mhid'=>$info['id'],'user_id'=>$user['id']))->find();
+
+		$buy_whole = M('buy_order as bo')
+		->field('bd.*')
+		->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+		->where(array('bo.rid' => $info['id'], 'bo.user_id' => $user['id'], 'bo.book_type' => 'xs','bo.buy_type' => 2))
+		->find();
+
+		$buy_episodes = M('buy_order as bo')
+		->field('bd.*')
+		->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+		->where(array('bo.rid' => $info['id'], 'bo.user_id' => $user['id'], 'bo.book_type' => 'xs','bo.buy_type' => 1,'bd.episodes' => $vo))
+		->find();
+
 	?>
-    
-		<if condition="$vo egt $info['pay_num'] and $info['pay_num'] gt 0">
-			<if condition="$read">
-				<div class="item">
-				<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">{$vo}章<span>{$money}元</span></a></div>
-			<else />
-				<div class="item lock">
-				<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">{$vo}章<span>{$money}元</span></a></div>
-			</if>
-		<else />
+		<if condition="$buy_whole">
 			<div class="item">
-			<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="" style="text-align:center;">{$vo}章<span></span></a></div>
-		</if> 
+				<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="" style="text-align:center;">
+					{$vo}话
+					<span></span>
+				</a>
+			</div>
+			<else />
+			<if condition="$vo egt $info['pay_num'] and $info['pay_num'] gt 0">
+				<if condition="$buy_episodes">
+					<div class="item">
+						<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="" style="text-align:center;">
+							{$vo}章
+							<span></span>
+						</a>
+					</div>
+					<else />
+					<div class="item lock">
+						<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="">
+							{$vo}章
+							<span>{$money}元</span>
+						</a>
+					</div>
+				</if>
+				<else />
+				<div class="item">
+					<a href="{:U('Book/inforedit')}&bid={$info['id']}&ji_no={$vo}&parent={$user.id}" class="" style="text-align:center;">
+						{$vo}章
+						<span></span>
+					</a>
+				</div>
+			</if>
+		</if>
     </volist>
     </div>
     <div class="action">
@@ -177,24 +209,24 @@
 		</if>
     </div>
 </div>
-<div class="bm-box mt-10">
-	<div class="head">
-		<div class="title dot">
-			猜你喜欢
-		</div>
-	</div>
-	<div class="books-row">
-		<foreach name="guess" item="vo">
-		<div class="item">
-			<a href="{:U('Book/bookinfo')}&bid={$vo.id}&parent={$user.id}">
-				<img class="lazy" src="{$vo.cover_pic}" data-original="{$vo.cover_pic}" style="width:110px;height:146px;" />
-				<div class="title">{$vo.title}</div>
-				<div class="text">更新至{$vo.episodes}章</div>
-			</a>
-		</div>
-		</foreach>
-	</div>
-</div>
+<!--<div class="bm-box mt-10">-->
+	<!--<div class="head">-->
+		<!--<div class="title dot">-->
+			<!--猜你喜欢-->
+		<!--</div>-->
+	<!--</div>-->
+	<!--<div class="books-row">-->
+		<!--<foreach name="guess" item="vo">-->
+		<!--<div class="item">-->
+			<!--<a href="{:U('Book/bookinfo')}&bid={$vo.id}&parent={$user.id}">-->
+				<!--<img class="lazy" src="{$vo.cover_pic}" data-original="{$vo.cover_pic}" style="width:110px;height:146px;" />-->
+				<!--<div class="title">{$vo.title}</div>-->
+				<!--<div class="text">更新至{$vo.episodes}章</div>-->
+			<!--</a>-->
+		<!--</div>-->
+		<!--</foreach>-->
+	<!--</div>-->
+<!--</div>-->
 <div class="book-bar">
     <div class="inner">
         <div class="body">
@@ -211,39 +243,39 @@
     </div>
 </div>
 
-<div class="bm-box mt-10" style="margin-bottom:3rem;">
-	<div class="bubble">
-		<span>打赏</span>
-		<hr>
-		<span class="sum_of_tip">{$info['send']|}书币</span>
-	</div>
-	<a class="btn-tip-menu" href="javascript:;">打赏</a>
-	<div class="tip-history">
-		<h6 class="title">打赏记录</h6>
-		<div class="no-data" style="display: none;text-align:center;font-size:16px">土豪，求打赏</div>
-		<div class="rows">
+<!--<div class="bm-box mt-10" style="margin-bottom:3rem;">-->
+	<!--<div class="bubble">-->
+		<!--<span>打赏</span>-->
+		<!--<hr>-->
+		<!--<span class="sum_of_tip">{$info['send']|}书币</span>-->
+	<!--</div>-->
+	<!--<a class="btn-tip-menu" href="javascript:;">打赏</a>-->
+	<!--<div class="tip-history">-->
+		<!--<h6 class="title">打赏记录</h6>-->
+		<!--<div class="no-data" style="display: none;text-align:center;font-size:16px">土豪，求打赏</div>-->
+		<!--<div class="rows">-->
 
-		</div>
-	</div>
-	<a class="moreBtn" href="javascript:;" onclick="LoadSendMore();">查看更多</a>	
-</div>
-<div class="ds">
-	<div class="msk" onclick="dsHide();"></div>
-	<div class="txt">
-		<div class="title">打赏</div>
-		<div class="send">
-			<ul>
-				<foreach name="_send" item="v" key="k">
-					<li _sid="{$k}">
-						<img src="{$v.pic}" />
-						<span>{$v.money}书币</span>
-					</li>
-				</foreach>
-			</ul>
-		</div>
-		<div class="dbtn" onclick="dsHide();">取消</div>
-	</div>
-</div>
+		<!--</div>-->
+	<!--</div>-->
+	<!--<a class="moreBtn" href="javascript:;" onclick="LoadSendMore();">查看更多</a>	-->
+<!--</div>-->
+<!--<div class="ds">-->
+	<!--<div class="msk" onclick="dsHide();"></div>-->
+	<!--<div class="txt">-->
+		<!--<div class="title">打赏</div>-->
+		<!--<div class="send">-->
+			<!--<ul>-->
+				<!--<foreach name="_send" item="v" key="k">-->
+					<!--<li _sid="{$k}">-->
+						<!--<img src="{$v.pic}" />-->
+						<!--<span>{$v.money}书币</span>-->
+					<!--</li>-->
+				<!--</foreach>-->
+			<!--</ul>-->
+		<!--</div>-->
+		<!--<div class="dbtn" onclick="dsHide();">取消</div>-->
+	<!--</div>-->
+<!--</div>-->
 
 <script type="text/javascript">
 	var page = 1;

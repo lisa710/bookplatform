@@ -105,7 +105,7 @@
         </a>
     </div>
 </div>
-<div >
+<div>
     <img src="{$info['cover_pic']}" alt="" style="width: 100%;height: 200px;">
 </div>
 <div class="list">
@@ -217,20 +217,22 @@
 
     var vip = 0;
     $(".action .wap-btn").click(function () {
-        var type = $('input[name="buy-type"]:checked').val();
+        var type = "{$type}";
+        var buy_type = $('input[name="buy-type"]:checked').val();
         var current = "{$current_ji}";
-        var mhid = "{$mhid}";
+        var rid = "{$rid}";
         var ji_start = $('.ji_start').val();
         var ji_end = $('.ji_end').val();
 
-        if (type == undefined || type == '') {
+        if (buy_type == undefined || buy_type == '') {
             tips('请选择购买方式');
             return false;
         }
         tips('数据正在请求中，请稍等...');
         $.post("{:U('Mh/buy_ajax')}", {
-            type: type,
-            mhid: mhid,
+            type:type,
+            buy_type: buy_type,
+            rid: rid,
             current: current,
             ji_start: ji_start,
             ji_end: ji_end
@@ -240,7 +242,11 @@
             if (d) {
                 if (d.status) {
                     tips('购买成功');
-                    location.href = "{:U('Mh/bookinfo')}&mhid=" + mhid;
+                    if(type == 'mh'){
+                        location.href = "{:U('Mh/bookinfo')}&mhid=" + rid;
+                    }else {
+                        location.href = "{:U('Book/bookinfo')}&bid=" + rid;
+                    }
                 } else {
                     tips(d.info);
                 }

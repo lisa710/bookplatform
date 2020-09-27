@@ -24,7 +24,7 @@ class WithdrawController extends AdminController {
 
 		$join = 'vv_member as m on m.id = w.mid';
 		$field = 'w.*,m.name,m.zfb';
-		$list = $this -> _get_list('m_withdraw as w',$field,$join, $where,'w.create_time desc');
+		$list = $this -> _get_list('m_withdraw as w', $where,'w.create_time desc',$field,$join);
 		
 		// 银行转账才需要显示银行卡信息
 		if($this -> _site['withdraw'] == 1){

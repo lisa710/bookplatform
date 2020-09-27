@@ -28,6 +28,10 @@ class ProductController extends AdminController {
             $cateids         = implode(',', $_POST['arrcateids']);
             unset($_POST['arrcateids']);
             $_POST['cateids'] = $cateids;
+
+            if($_POST['free_type'] == 2 && $_POST['whole_money'] <= 0){
+                $this->error('付费时，整书购买价格需大于0');
+            }
             // 修改
             if (isset($_GET['id'])) {
                 $_POST['update_time'] = NOW_TIME;
