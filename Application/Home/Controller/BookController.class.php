@@ -620,7 +620,7 @@ class BookController extends HomeController
                     if (!$money || $money <= 0) {
                         $money = $this->_site['mhmoney'];
                     }
-                    $money = intval($money);
+//                    $money = intval($money);
                     $read  = M('read')->where(array('episodes' => $i, 'rid' => $id, 'user_id' => $this->user['id'], 'type' => $type))->find();
 
                     $buy_whole = M('buy_order as bo')
@@ -673,25 +673,53 @@ class BookController extends HomeController
                     if (!$money || $money <= 0) {
                         $money = $this->_site['xsmoney'];
                     }
-                    $money = intval($money);
+//                    $money = intval($money);
                     $read  = M('read')->where(array('episodes' => $i, 'rid' => $id, 'user_id' => $this->user['id'], "type" => $type))->find();
-                    if ($i >= $info['pay_num'] && $info['pay_num'] > 0) {
-                        if ($read) {
-                            $html .= '<div class="item">';
-                        } else {
-                            $html .= '<div class="item lock">';
-                        }
+
+
+                    $buy_whole = M('buy_order as bo')
+                        ->field('bd.*')
+                        ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+                        ->where(array('bo.rid' => $id, 'bo.user_id' => $this->user['id'], 'bo.book_type' => $type, 'bo.buy_type' => 2))
+                        ->find();
+
+                    $buy_episodes = M('buy_order as bo')
+                        ->field('bd.*')
+                        ->join('vv_buy_detail as bd on bd.order_id = bo.id', 'left')
+                        ->where(array('bo.rid' => $id, 'bo.user_id' => $this->user['id'], 'bo.book_type' => $type, 'bo.buy_type' => 1, 'bd.episodes' => $i))
+                        ->find();
+
+//                    $html='';
+                    if ($buy_whole) {
+                        $html .= '<div class="item">';
+                        $html .= '<a href="' . U('Book/inforedit', array('bid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '章';
                     } else {
-                        $money = 0;
-                        $html  .= '<div class="item">';
+                        if ($i >= $info['pay_num'] && $info['pay_num'] > 0 && $info['free_type'] == 2) {
+                            if ($buy_episodes) {
+                                $html .= '<div class="item">';
+                                $html .= '<a href="' . U('Book/inforedit', array('bid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '章';
+                            } else {
+                                $html .= '<div class="item lock">';
+                                $html .= '<a href="' . U('Book/inforedit', array('bid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '章';
+                            }
+                        } else {
+                            $html .= '<div class="item">';
+                            $html .= '<a href="' . U('Book/inforedit', array('bid' => $id, 'ji_no' => $i)) . '" class="" style="text-align:center;">' . $i . '章';
+                        }
                     }
 
-                    $html .= '<a href="' . U('Book/inforedit', array('bid' => $id, 'ji_no' => $i)) . '" class="">' . $i . '章';
-                    if ($read) {
-                        $html .= '<span style="color: #ccc">' . $money . '书币</span>';
+                    if ($buy_whole) {
+                        $html .= '<span></span>';
                     } else {
-                        $html .= '<span>' . $money . '书币</span>';
+                        if ($buy_episodes) {
+                            $html .= '<span></span>';
+                        } elseif ($i >= $info['pay_num'] && $info['pay_num'] > 0 && $info['free_type'] == 2) {
+                            $html .= '<span>' . $money . '元</span>';
+                        } else {
+                            $html .= '<span></span>';
+                        }
                     }
+
                     $html .= '</a>';
                     $html .= '</div>';
                 }

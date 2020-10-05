@@ -41,38 +41,34 @@ class WithdrawController extends AdminController {
 	// 拒绝
 	public function refuse(){
 		$id = intval($_GET['id']);
-		$info = M('withdraw') -> find($id);
-		if($info['status'] !=1){
+		$withdraw_info = M('m_withdraw') -> find($id);
+		if($withdraw_info['status'] !=1){
 			$this -> error('不能进行该操作');
 		}
-		M('withdraw') -> where('id='.$id) -> save(array(
-			'status' => -1,
+		M('m_withdraw') -> where('id='.$id) -> save(array(
+			'status' => 3,
 			'confirm_time' => NOW_TIME
 		));
 		
 		// 拒绝后需要把余额退回到账户
-		
-		$user_info = M('user') -> find($info['user_id']);
-		M('user') -> where('id='.$info['user_id']) -> save(array(
-			'rmb' => array('exp', 'rmb+'.$info['money'])
-		));
-		flog($info['user_id'],'money',$info['money'], 11); // 记录财务日志
+        $member_info = M('member') -> find($withdraw_info['mid']);
+        M('member')->where(array('id'=>$withdraw_info['mid']))->setInc('sale_money',$withdraw_info['money'] / ($member_info['separate']/100));
+        flog($withdraw_info['mid'],'m_withdraw',$withdraw_info['money'], 11); // 记录财务日志
 		redirect($_SERVER['HTTP_REFERER']);
 	}
 	
 	// 审核
 	public function audit(){
 		$id = intval($_GET['id']);
-		$info = M('withdraw') -> find($id);
+		$info = M('m_withdraw') -> find($id);
 		if($info['status'] !=1){
 			$this -> error('不能进行该操作');
 		}
-		M('withdraw') -> where('id='.$id) -> save(array(
+		M('m_withdraw') -> where('id='.$id) -> save(array(
 			'status' => 2,
 			'audit_time' => NOW_TIME
 		));
 		redirect($_SERVER['HTTP_REFERER']);
-		
 	}
 	
 	// 确认完成

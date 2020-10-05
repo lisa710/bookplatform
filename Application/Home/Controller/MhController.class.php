@@ -885,6 +885,8 @@ class MhController extends HomeController
         $ji_end   = I('post.ji_end');
 
         $order_num = $this->user['id'] . date('Ymdhis') . rand(10000, 99999);
+
+        $sale_money = 0;//售卖价格
         switch ($buy_type) {
             case 1://购买当前章节
                 $buy_detail = M('buy_order as bo')
@@ -919,7 +921,7 @@ class MhController extends HomeController
                     'episodes' => $current,
                     'money'    => $info['money'] == 0 ? $this->_site[$type . 'money'] : $info['money'],
                 ];
-
+                $sale_money = $detail_data['money'];
                 M('buy_detail')->add($detail_data);
                 break;
             case 2:
@@ -952,12 +954,13 @@ class MhController extends HomeController
                 $order_id = M('buy_order')->getLastInsID();
 
                 $detail_data = [];
-                foreach ($info as $v) {
-                    $detail_data[] = [
+                foreach ($info as $k => $v) {
+                    $detail_data[$k] = [
                         'order_id' => $order_id,
                         'episodes' => $v['ji_no'],
-                        'money'    => $v['money'] == 0 ? $this->_site['mhmoney'] : $v['money'],
+                        'money'    => $v['money'] == 0 ? $this->_site[$type . 'money'] : $v['money'],
                     ];
+                    $sale_money += $detail_data[$k]['money'];
                 }
 
                 M('buy_detail')->addAll($detail_data);
@@ -984,10 +987,17 @@ class MhController extends HomeController
                     'order_id' => $order_id,
                     'money'    => $info['whole_money'],
                 ];
-
+                $sale_money = $detail_data['money'];
                 M('buy_detail')->add($detail_data);
                 break;
         }
+
+        if ($type == 'mh') {
+            $member_info = M('mh_list')->field('member_id')->where(['id' => $rid])->find();
+        } else {
+            $member_info = M('book')->field('member_id')->where(['id' => $rid])->find();
+        }
+        M('member')->where(['id' => $member_info['member_id']])->setInc('sale_money',$sale_money);
         $this->success('购买成功');
     }
 

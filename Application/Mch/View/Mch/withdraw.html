@@ -16,8 +16,9 @@
 					提现状态:
 					<select name="status" default="{$_GET['status']}" style="width:90px; min-width:0;">
 						<option value="">全部</option>
-						<option value="1">待转账</option>
-						<option value="2">已转账</option>
+						<option value="1">申请中</option>
+						<option value="2">已通过</option>
+						<option value="3">已拒绝</option>
 					</select>
 					提现时间:
 					<input type="text" name="time1" value="{$_GET['time1']}" class="smallinput" style="width:100px;" onclick="WdatePicker()" />
@@ -41,7 +42,7 @@
 						<td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
 						<td>{$vo.zfb}</td>
 						<td>{$vo.money}</td>
-						<td>{$vo.status|get_withdraw_status}</td>
+						<td>{$vo.status|get_m_withdraw_status}</td>
 					</tr>
 					</volist>
 				</tbody>

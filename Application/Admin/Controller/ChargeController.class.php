@@ -5,8 +5,29 @@ class ChargeController extends AdminController {
     // 通知列表
 	public function index(){
 		$where = $this -> _get_where();
-		$where['status'] = 2;
-		$list = $this -> _get_list('charge',$where);
+//		$where['status'] = 2;
+//		$list = $this -> _get_list('charge',$where);
+        $join = 'vv_buy_detail bd ON bd.order_id = bo.id';
+//		$list = $this -> _get_list('buy_order as bo',$where,'create_time DESC','bo.*,SUM( bd.money )',$join);
+
+        $model = M('buy_order as bo');
+        $count = $model -> where($where) -> count();
+        $page = new \Think\Page($count, 25);
+
+        $list = $model->field('bo.*,SUM( bd.money ) total_money')
+            ->join('vv_buy_detail bd ON bd.order_id = bo.id','left')
+            -> where($where)
+            -> limit($page -> firstRow . ',' . $page -> listRows )
+            -> group('bo.id')
+            -> order('bo.create_time DESC')
+            -> select();
+
+        $this -> data = array(
+            'list' => $list,
+            'page' => $page -> show(),
+            'count' => $count
+        );
+
 		foreach ($list as $k=>$v){
 			$list[$k]['nickname'] = M('user')->where(array('id'=>$v['user_id']))->getField('nickname');
 		}
@@ -27,17 +48,18 @@ class ChargeController extends AdminController {
 		
 		if(!empty($_GET['time1']) && !empty($_GET['time2'])){
 			$where['create_time'] = array(
-				array('gt', strtotime($_GET['time1'])),
-				array('lt', strtotime($_GET['time2']) + 86400)
+				array('gt', $_GET['time1']),
+				array('lt', $_GET['time2'])
 			);
 		}
 		elseif(!empty($_GET['time1'])){
-			$where['create_time'] = array('gt', strtotime($_GET['time1']));
+			$where['create_time'] = array('gt', $_GET['time1']);
 		}
 		elseif(!empty($_GET['time2'])){
-			$where['create_time'] = array('lt', strtotime($_GET['time2'])+86400);
+			$where['create_time'] = array('lt', $_GET['time2']);
 		}
-		return $where;
+
+        return $where;
 	}
 	
 }?>

@@ -43,8 +43,8 @@ class MchController extends AdminController {
 		if(IS_POST){
 			$money = I('post.money');
 			$m = M('member')->find(intval($this->mch['id']));
-			if($m['money']<$money){
-				$this->error('您的可提现佣金不足');
+			if($m['sale_money'] * $m['separate'] / 100 < $money){
+				$this->error('您的可提现金额不足');
 			}else{
 				M('m_withdraw')->add(array(
 					'mid'=>$this->mch['id'],
@@ -52,13 +52,14 @@ class MchController extends AdminController {
 					'money'=>$money,
 					'create_time'=>time(),
 				));
-				M('member')->where(array('id'=>$this->mch['id']))->setDec('money',$money);
+				M('member')->where(array('id'=>$this->mch['id']))->setDec('sale_money',$money / ($m['separate']/100));
 				$this->success('申请成功，请等待审核',U('withdraw'));
 			}
 			exit;
 		}
 		$info = M('member')->find(intval($this->mch['id']));
-		$this->assign('info',$info);
+		$info['sale_money'] = $info['sale_money'] * $info['separate'] / 100;
+        $this->assign('info',$info);
 		$this->display();
 	}
 }

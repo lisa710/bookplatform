@@ -337,6 +337,18 @@ function get_finance_action($action){
 	return $return;
 }
 
+// 作者提现根据订单提现申请返回状态信息
+function get_m_withdraw_status($status){
+    $status_str = '';
+    switch($status){
+        case 1: $status_str = '申请中'; break;
+        case 2: $status_str = '已通过'; break;
+        case 3: $status_str = '已拒绝'; break;
+        default : $status_str = '未知状态';
+    }
+    return $status_str;
+}
+
 // 根据订单提现申请返回状态信息
 function get_withdraw_status($status){
 	$status_str = '';
