@@ -32,6 +32,7 @@ class LoginController extends BaseController
             $userpwd  = "p" . rand(10000, 99999);
             M('user')->where(['id' => $uid])->save(['nickname' => $nickname, 'userpwd' => $userpwd, 'username' => $nickname]);
             M('follow')->add(['user_id' => $uid, 'member_id' => $member_id, 'create_time' => time()]);
+            $is_sign['id'] = M('user')->getLastInsID();
         } else {
             $is_follow = M('follow')->where(['user_id' => $is_sign['id'], 'member_id' => $member_id])->find();
             if (empty($is_follow)) {//关注作者
