@@ -68,7 +68,7 @@ class HomeController extends Controller
         }
         $this->tplmsg = new \Common\Util\tplmsg();
         //判断是否是微信端
-        if (is_weixin()){
+        if (false){
             if (session('?user')) {
                 $this->user = M('user')->find(session('user.id'));
 				setcookie("uloginid",rand(100,999).$this->user[id],time()+5*365*24*3600);
