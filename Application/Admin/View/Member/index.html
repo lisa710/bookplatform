@@ -114,14 +114,30 @@
 			}
 			
 			function showQrcode(id){
-				layer.open({
-				  type: 2,
-				  title: '查看二维码',
-				  shadeClose: true,
-				  shade: 0.8,
-				  area: ['445px', '430px'],
-				  content: "{:U('showQrcode')}&id="+id,
-				});
+                $.ajax({
+                    url: "http://59.111.97.208:8880/api/wechat/test?method=getQR",
+                    type: 'post',
+                    data:{scene_id:id},
+                    success: function(d) {
+                        console.log(d);
+                        layer.open({
+                            type: 2,
+                            title: '查看二维码',
+                            shadeClose: true,
+                            shade: 0.8,
+                            area: ['450px', '480px'],
+                            content: d.info,
+                        });
+                    },
+                });
+				// layer.open({
+				//   type: 2,
+				//   title: '查看二维码',
+				//   shadeClose: true,
+				//   shade: 0.8,
+				//   area: ['445px', '430px'],
+				//   content: "{:U('showQrcode')}&id="+id,
+				// });
 			}
 			
 			function charge(id){

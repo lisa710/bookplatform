@@ -30,7 +30,7 @@ class LoginController extends BaseController
             $uid      = M('user')->add($user_info);
             $nickname = "u" . $uid . rand(100, 999);
             $userpwd  = "p" . rand(10000, 99999);
-            M('user')->where(['id' => $uid])->save(['nickname' => $nickname, 'userpwd' => $userpwd, 'username' => $nickname]);
+            M('user')->where(['id' => $uid])->save(['nickname' => $nickname, 'userpwd' => $userpwd, 'username' => $nickname, 'memid' => $member_id]);
             M('follow')->add(['user_id' => $uid, 'member_id' => $member_id, 'create_time' => time()]);
             $is_sign['id'] = M('user')->getLastInsID();
         } else {
