@@ -122,12 +122,12 @@
 						<td>{$vo.nickname}</td>
 						<td><if condition="$vo['vip']">VIP<else />-</if></td>
 						<td><if condition="$vo['vip_e_time'] gt 0">{$vo.vip_e_time|date="Y-m-d H:i:s",###}<else/>-</if></td>
-						<td>{$vo.money}<a href="javascript:;" class="r4" onclick="showP({$vo['id']});">充值书币</a></td></td>
+						<td style="display: none">{$vo.money}<a href="javascript:;" class="r4" onclick="showP({$vo['id']});">充值书币</a></td></td>
 						<td>{$vo.rmb}</td>
 						<td><if condition="$vo['sub_time'] gt 0">{$vo.sub_time|date="Y-m-d H:i:s",###}<else/>-</if></td>
-						<td>{$vo.agent1}</td>
-						<td>{$vo.agent2}</td>
-						<td>{$vo.agent3}</td>
+						<td style="display: none">{$vo.agent1}</td>
+						<td style="display: none">{$vo.agent2}</td>
+						<td style="display: none">{$vo.agent3}</td>
 						<td>
 							<if condition="$vo['isrec'] eq 1">
 								<a style="color:blue" href="{:U('Admin/setField',array('id'=>$vo['id'],'table'=>'user','field'=>'isrec'))}">否</a>
