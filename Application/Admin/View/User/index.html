@@ -58,16 +58,16 @@
 						<th class="head0">昵称</th>
 						<th class="head1">VIP</th>
 						<th class="head1">VIP到期时间</th>
-						<th class="head1">
-							<a href="<?php if($_GET['order'] == 'money' && $_GET['type'] == 'desc'){
-								echo U('index?order=money&type=asc');
-							}else{
-								echo U('index?order=money&type=desc');
-							}?>" style="color:red">
-							账户书币
-							<?php if($_GET['order'] == 'money' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
-							</a>
-						</th>
+<!--						<th class="head1">-->
+<!--							<a href="<?php if($_GET['order'] == 'money' && $_GET['type'] == 'desc'){-->
+<!--								echo U('index?order=money&type=asc');-->
+<!--							}else{-->
+<!--								echo U('index?order=money&type=desc');-->
+<!--							}?>" style="color:red">-->
+<!--							账户书币-->
+<!--							<?php if($_GET['order'] == 'money' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>-->
+<!--							</a>-->
+<!--						</th>-->
 						<th class="head1">账户余额</th>
 						<th class="head0">
 							<a href="<?php if($_GET['order'] == 'sub_time' && $_GET['type'] == 'desc'){
@@ -79,36 +79,36 @@
 							<?php if($_GET['order'] == 'sub_time' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
 							</a>
 						</th>
-						<th class="head0">
-							<a href="<?php if($_GET['order'] == 'agent1' && $_GET['type'] == 'desc'){
-								echo U('index?order=agent1&type=asc');
-							}else{
-								echo U('index?order=agent1&type=desc');
-							}?>" style="color:red">
-							一级下线数
-							<?php if($_GET['order'] == 'agent1' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
-							</a>
-						</th>
-						<th class="head0">
-							<a href="<?php if($_GET['order'] == 'agent2' && $_GET['type'] == 'desc'){
-								echo U('index?order=agent2&type=asc');
-							}else{
-								echo U('index?order=agent2&type=desc');
-							}?>" style="color:red">
-							二级下线数
-							<?php if($_GET['order'] == 'agent2' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
-							</a>
-						</th>
-						<th class="head0">
-							<a href="<?php if($_GET['order'] == 'agent3' && $_GET['type'] == 'desc'){
-								echo U('index?order=agent3&type=asc');
-							}else{
-								echo U('index?order=agent3&type=desc');
-							}?>" style="color:red">
-							三级下线数
-							<?php if($_GET['order'] == 'agent3' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
-							</a>
-						</th>
+<!--						<th class="head0">-->
+<!--							<a href="<?php if($_GET['order'] == 'agent1' && $_GET['type'] == 'desc'){-->
+<!--								echo U('index?order=agent1&type=asc');-->
+<!--							}else{-->
+<!--								echo U('index?order=agent1&type=desc');-->
+<!--							}?>" style="color:red">-->
+<!--							一级下线数-->
+<!--							<?php if($_GET['order'] == 'agent1' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>-->
+<!--							</a>-->
+<!--						</th>-->
+<!--						<th class="head0">-->
+<!--							<a href="<?php if($_GET['order'] == 'agent2' && $_GET['type'] == 'desc'){-->
+<!--								echo U('index?order=agent2&type=asc');-->
+<!--							}else{-->
+<!--								echo U('index?order=agent2&type=desc');-->
+<!--							}?>" style="color:red">-->
+<!--							二级下线数-->
+<!--							<?php if($_GET['order'] == 'agent2' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>-->
+<!--							</a>-->
+<!--						</th>-->
+<!--						<th class="head0">-->
+<!--							<a href="<?php if($_GET['order'] == 'agent3' && $_GET['type'] == 'desc'){-->
+<!--								echo U('index?order=agent3&type=asc');-->
+<!--							}else{-->
+<!--								echo U('index?order=agent3&type=desc');-->
+<!--							}?>" style="color:red">-->
+<!--							三级下线数-->
+<!--							<?php if($_GET['order'] == 'agent3' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>-->
+<!--							</a>-->
+<!--						</th>-->
 						<th class="head1">是否客服消息黑名单</th>
 						<th>操作</th>
 					</tr>
