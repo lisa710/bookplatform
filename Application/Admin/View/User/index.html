@@ -58,7 +58,7 @@
 						<th class="head0">昵称</th>
 						<th class="head1">VIP</th>
 						<th class="head1">VIP到期时间</th>
-						<th class="head1">
+						<th class="head1" style="display: none">
 							<a href="<?php if($_GET['order'] == 'money' && $_GET['type'] == 'desc'){
 								echo U('index?order=money&type=asc');
 							}else{
@@ -79,7 +79,7 @@
 							<?php if($_GET['order'] == 'sub_time' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
 							</a>
 						</th>
-						<th class="head0">
+						<th class="head0" style="display: none">
 							<a href="<?php if($_GET['order'] == 'agent1' && $_GET['type'] == 'desc'){
 								echo U('index?order=agent1&type=asc');
 							}else{
@@ -89,7 +89,7 @@
 							<?php if($_GET['order'] == 'agent1' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
 							</a>
 						</th>
-						<th class="head0">
+						<th class="head0" style="display: none">
 							<a href="<?php if($_GET['order'] == 'agent2' && $_GET['type'] == 'desc'){
 								echo U('index?order=agent2&type=asc');
 							}else{
@@ -99,7 +99,7 @@
 							<?php if($_GET['order'] == 'agent2' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
 							</a>
 						</th>
-						<th class="head0">
+						<th class="head0" style="display: none">
 							<a href="<?php if($_GET['order'] == 'agent3' && $_GET['type'] == 'desc'){
 								echo U('index?order=agent3&type=asc');
 							}else{
