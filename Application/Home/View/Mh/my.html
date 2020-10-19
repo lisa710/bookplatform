@@ -48,7 +48,7 @@
         <if condition="$user['username']"><span style="display: block;">账号密码：{$user.username}/{$user.userpwd}</span></if>
       </div>
 
-		<div class="action">
+		<div class="action" style="display: none">
 			<a href="{:U('Mh/withdraw')}" class="btn btn-sign" style="color:#2196F3">申请提现</a>
 		</div>
 		<div class="action">
@@ -110,7 +110,7 @@
             <div class="title">我的账户</div>
         </a>
         <if condition="$user['vip_level'] eq 0">
-        <div class="action">
+        <div class="action" style="display: none">
             <a href="{:U('Mh/pay')}" class="btn">立即充值</a>
         </div>
         <else />
@@ -120,7 +120,7 @@
         </if>
     </div>
     
-    <div class="item mt-10">
+    <div class="item mt-10" style="display: none">
         <a href="{:U('Mh/myTeam')}" class="link">
             <i class="icon-level"></i>  
             <div class="title">我的客户</div>
@@ -133,7 +133,7 @@
         </a>
     </div>
     
-    <div class="item tl">
+    <div class="item tl" style="display: none">
         <a href="{:U('Mh/qrcode')}&id={$user['id']}&parent={$user.id}" class="link">
             <i class="icon-shop"></i>
             <div class="title">推广二维码</div>
@@ -239,9 +239,9 @@
 
 <div class="tabar flb">
     <nav class="nav hls1">
-        <div class="item">
+        <div class="item" style="display: none">
             <a href="{:U('Mh/book_shelf',array('parent'=>$user[id]))}">
-                <i class="icon-book"></i><div class="title">书架i</div>
+                <i class="icon-book"></i><div class="title">书架</div>
             </a>
         </div>
         <div class="item">
