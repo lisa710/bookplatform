@@ -198,6 +198,38 @@ class MemberController extends AdminController
         $this->success('操作成功！');
     }
 
+    // 拒绝
+    public function refuse(){
+        $id = intval($_GET['id']);
+        $withdraw_info = M('m_withdraw') -> find($id);
+        if($withdraw_info['status'] !=1){
+            $this -> error('不能进行该操作');
+        }
+        M('m_withdraw') -> where('id='.$id) -> save(array(
+            'status' => 3,
+            'confirm_time' => NOW_TIME
+        ));
+
+        // 拒绝后需要把余额退回到账户
+        $member_info = M('member') -> find($withdraw_info['mid']);
+        M('member')->where(array('id'=>$withdraw_info['mid']))->setInc('sale_money',$withdraw_info['money'] / ($member_info['separate']/100));
+        flog($withdraw_info['mid'],'m_withdraw',$withdraw_info['money'], 11); // 记录财务日志
+        $this->success('操作成功！');
+    }
+
+    // 审核
+    public function audit(){
+        $id = intval($_GET['id']);
+        $info = M('m_withdraw') -> find($id);
+        if($info['status'] !=1){
+            $this -> error('不能进行该操作');
+        }
+        M('m_withdraw') -> where('id='.$id) -> save(array(
+            'status' => 2,
+            'audit_time' => NOW_TIME
+        ));
+        $this->success('操作成功！');
+    }
 
     //账户提现
     public function doWith()

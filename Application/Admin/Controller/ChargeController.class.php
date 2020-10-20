@@ -35,21 +35,21 @@ class ChargeController extends AdminController {
 		$this->assign('page',$this->data['page']);
 		$this->display();
 	}
-	
+
 	private function _get_where(){
 		if(IS_POST){
 			$_GET  = array_merge($_GET, $_POST);
 			$_GET['p'] = 1; //如果是post的话回到第一页
 		}
-		
+
 		if(!empty($_GET['user_id'])){
 			$where['user_id'] = intval($_GET['user_id']);
 		}
-		
+
 		if(!empty($_GET['time1']) && !empty($_GET['time2'])){
 			$where['create_time'] = array(
-				array('gt', $_GET['time1']),
-				array('lt', $_GET['time2'])
+				array('gt', $_GET['time1'].' 00:00:00'),
+				array('lt', $_GET['time2'].' 23:59:59')
 			);
 		}
 		elseif(!empty($_GET['time1'])){
@@ -61,5 +61,5 @@ class ChargeController extends AdminController {
 
         return $where;
 	}
-	
+
 }?>
