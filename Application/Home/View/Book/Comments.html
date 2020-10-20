@@ -36,7 +36,7 @@
 					<img class="mui-media-object mui-pull-left" src="{$v.headimg}">
 					<div class="mui-media-body">
 								{$v.content}
-						<span class="mui-pull-right">2018-03-12</span>
+						<span class="mui-pull-right">{$v.create_time|date="Y-m-d",###}</span>
 					</div>
 				</li>
 			</foreach>
