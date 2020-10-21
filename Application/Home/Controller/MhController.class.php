@@ -900,9 +900,15 @@ class MhController extends HomeController
                 }
 
                 if ($type == 'mh') {
-                    $info = M('mh_episodes')->where("mhid = {$rid} AND ji_no = {$current}")->find();
+                    $info = M('mh_list as m')->field('m.member_id,me.*')
+                        ->join('vv_mh_episodes me ON me.bid = m.id', 'left')
+                        ->where("m.id = {$rid} AND me.ji_no = {$current}")
+                        ->find();
                 } else {
-                    $info = M('book_episodes')->where("bid = {$rid} AND ji_no = {$current}")->find();
+                    $info = M('book as b')->field('b.member_id,be.*')
+                        ->join('vv_book_episodes be ON be.bid = b.id', 'left')
+                        ->where("b.id = {$rid} AND be.ji_no = {$current}")
+                        ->find();
                 }
 
                 $order_data = [
@@ -911,6 +917,7 @@ class MhController extends HomeController
                     'buy_type'  => 1,
                     'book_type' => $type,
                     'rid'       => $rid,
+                    'member_id' => $info['member_id'],
                 ];
 
                 M('buy_order')->add($order_data);
@@ -921,7 +928,7 @@ class MhController extends HomeController
                     'episodes' => $current,
                     'money'    => $info['money'] == 0 ? $this->_site[$type . 'money'] : $info['money'],
                 ];
-                $sale_money = $detail_data['money'];
+                $sale_money  = $detail_data['money'];
                 M('buy_detail')->add($detail_data);
                 break;
             case 2:
@@ -936,10 +943,22 @@ class MhController extends HomeController
                     $this->error('您的购买中存在重复章节，请从第' . ($buy_detail['episodes'] + 1) . '章开始购买');
                 }
 
+//                if ($type == 'mh') {
+//                    $info = M('mh_episodes')->where("mhid = {$rid} AND ji_no <= {$ji_end} AND ji_no >= $ji_start")->select();
+//                } else {
+//                    $info = M('book_episodes')->where("bid = {$rid} AND ji_no <= {$ji_end} AND ji_no >= $ji_start")->select();
+//                }
+
                 if ($type == 'mh') {
-                    $info = M('mh_episodes')->where("mhid = {$rid} AND ji_no <= {$ji_end} AND ji_no >= $ji_start")->select();
+                    $info = M('mh_list as m')->field('m.member_id,me.*')
+                        ->join('vv_mh_episodes me ON me.bid = m.id', 'left')
+                        ->where("m.id = {$rid} AND me.ji_no <= {$ji_end} AND me.ji_no >= $ji_start")
+                        ->select();
                 } else {
-                    $info = M('book_episodes')->where("bid = {$rid} AND ji_no <= {$ji_end} AND ji_no >= $ji_start")->select();
+                    $info = M('book as b')->field('b.member_id,be.*')
+                        ->join('vv_book_episodes be ON be.bid = b.id', 'left')
+                        ->where("b.id = {$rid} AND be.ji_no <= {$ji_end} AND be.ji_no >= $ji_start")
+                        ->select();
                 }
 
                 $order_data = [
@@ -948,6 +967,7 @@ class MhController extends HomeController
                     'buy_type'  => 1,
                     'book_type' => $type,
                     'rid'       => $rid,
+                    'member_id' => $info[0]['member_id'],
                 ];
 
                 M('buy_order')->add($order_data);
@@ -960,7 +980,7 @@ class MhController extends HomeController
                         'episodes' => $v['ji_no'],
                         'money'    => $v['money'] == 0 ? $this->_site[$type . 'money'] : $v['money'],
                     ];
-                    $sale_money += $detail_data[$k]['money'];
+                    $sale_money      += $detail_data[$k]['money'];
                 }
 
                 M('buy_detail')->addAll($detail_data);
@@ -972,12 +992,14 @@ class MhController extends HomeController
                 } else {
                     $info = M('book')->where("id = {$rid}")->find();
                 }
+
                 $order_data = [
                     'order_num' => $order_num,
                     'user_id'   => $this->user['id'],
                     'buy_type'  => 2,
                     'book_type' => $type,
                     'rid'       => $rid,
+                    'member_id' => $info['member_id'],
                 ];
 
                 M('buy_order')->add($order_data);
@@ -987,7 +1009,7 @@ class MhController extends HomeController
                     'order_id' => $order_id,
                     'money'    => $info['whole_money'],
                 ];
-                $sale_money = $detail_data['money'];
+                $sale_money  = $detail_data['money'];
                 M('buy_detail')->add($detail_data);
                 break;
         }
@@ -997,7 +1019,7 @@ class MhController extends HomeController
         } else {
             $member_info = M('book')->field('member_id')->where(['id' => $rid])->find();
         }
-        M('member')->where(['id' => $member_info['member_id']])->setInc('sale_money',$sale_money);
+        M('member')->where(['id' => $member_info['member_id']])->setInc('sale_money', $sale_money);
         $this->success('购买成功');
     }
 
