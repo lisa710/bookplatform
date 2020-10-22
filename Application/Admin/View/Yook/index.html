@@ -61,7 +61,7 @@
 							<?php if($_GET['order'] == 'chargemoney' && $_GET['type'] == 'desc')echo '↑';else echo '↓';?>
 							</a>
 						</th>
-						<th class="head1">充值人数/阅读人数</th>
+				<!--<th class="head1">充值人数/阅读人数</th>-->
 						<th class="head1">操作</th>
 					</tr>
 				</thead>
@@ -80,17 +80,17 @@
 						<td>{$vo.readnum}</td>
 						<td>{$vo.chargenum}</td>
 						<td>{$vo.chargemoney}</td>
-						<td>
+				<!--<td>
 							<if condition="$vo['readnum']">
 								{:sprintf("%.2f",$vo['chargenum']/$vo['readnum']*100)}%
 							<else />
 								0%
 							</if>
-						</td>
+						</td>-->
 						
 						<td class="center">
 							<a href="javascript:;" onclick="showP({$vo['id']});">评论</a> | 
-							<a href="javascript:;" onclick="showPs({$vo['id']});">打赏记录</a> | 
+						<!--<a href="javascript:;" onclick="showPs({$vo['id']});">打赏记录</a> | -->
 							<a href="{:U('edit', 'id='.$vo['id'])}">修改</a> | 
 							<a href="{:U('del', 'id='.$vo['id'])}" onclick="return confirm('你确实要删除这个漫画吗？')">删除</a>
 						</td>
