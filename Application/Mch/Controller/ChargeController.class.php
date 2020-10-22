@@ -1,14 +1,12 @@
 <?php
-namespace Admin\Controller;
+namespace Mch\Controller;
 use Think\Controller;
 class ChargeController extends AdminController {
     // 通知列表
 	public function index(){
 		$where = $this -> _get_where();
-//		$where['status'] = 2;
-//		$list = $this -> _get_list('charge',$where);
-        $join = 'vv_buy_detail bd ON bd.order_id = bo.id';
-//		$list = $this -> _get_list('buy_order as bo',$where,'create_time DESC','bo.*,SUM( bd.money )',$join);
+        $member_id = session('mch.id');
+        $where['member_id'] = $member_id;
 
         $model = M('buy_order as bo');
         $count = $model -> where($where) -> count();

@@ -4,6 +4,7 @@ use Think\Controller;
 class ProductController extends AdminController {
     // 漫画列表
 	public function index(){
+	    $where = [];
 		if($_POST['title']){
 			$_GET['p'] = 1; //如果是post的话回到第一页
 			$_GET['title'] = $_POST['title'];
@@ -15,7 +16,11 @@ class ProductController extends AdminController {
 			$type = $_GET['type'] == 'asc' ? 'asc' : 'desc';
 			$order = $_GET['order'].' '.$type;
 		}
-		$this -> _list('mh_list',$where, $order);
+        $join = 'vv_member as m on m.id = ml.member_id';
+        $list = $this->_get_list('mh_list as ml',$where,$order,'ml.*,m.name as author',$join);
+        $this -> assign('list', $list);
+        $this -> assign('page', $this -> data['page']);
+        $this -> display();
 	}
 	
 	// 编辑、添加漫画

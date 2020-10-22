@@ -9,6 +9,7 @@ class BookController extends AdminController
     // 列表
     public function index()
     {
+        $where = [];
         if ($_POST['title']) {
             $_GET['p']      = 1; //如果是post的话回到第一页
             $_GET['title']  = $_POST['title'];
@@ -20,7 +21,11 @@ class BookController extends AdminController
             $type  = $_GET['type'] == 'asc' ? 'asc' : 'desc';
             $order = $_GET['order'] . ' ' . $type;
         }
-        $this->_list('book', $where, $order);
+        $join = 'vv_member as m on m.id = b.member_id';
+        $list = $this->_get_list('book as b',$where,$order,'b.*,m.name as author',$join);
+        $this -> assign('list', $list);
+        $this -> assign('page', $this -> data['page']);
+        $this -> display();
     }
 
     // 编辑、添加小说

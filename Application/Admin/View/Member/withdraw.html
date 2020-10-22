@@ -61,8 +61,8 @@
 						<td>{$vo.status|get_withdraw_status}</td>
 						<td class="center">
 							<if condition="$vo['status'] eq 1">
-								<a href="{:U('audi', array('id'=>$vo['id'],'status'=>2))}">提现成功</a> | 
-								<a href="{:U('audi', array('id'=>$vo['id'],'status'=>-1))}">拒绝提现</a> 
+								<a href="{:U('audit?id='.$vo['id'])}">提现成功</a> |
+								<a href="{:U('refuse?id='.$vo['id'])}">拒绝提现</a>
 							<else />
 								结算完成
 							</if>
