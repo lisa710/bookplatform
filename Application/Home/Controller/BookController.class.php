@@ -48,7 +48,11 @@ class BookController extends HomeController
             $this->error('非法访问漫画数据！', U('Book/index'));
         }
 
-        $info = M('book')->where("id={$bid}")->find();
+        $info = M('book as b')->field('b.*,me.name as member_name')
+            ->join('vv_member as me on me.id = b.member_id', 'left')
+            ->where("b.id={$bid}")
+            ->find();
+
         if (empty($info)) {
             $this->error('漫画数据缺失！', U('Book/index'));
         }
@@ -129,22 +133,23 @@ class BookController extends HomeController
     public function inforedit()
     {
 
-        $bid   = I('bid', 'intval', 0);
-        $ji_no = I('ji_no', 'intval', 0);
+        $bid           = I('bid', 'intval', 0);
+        $ji_no         = I('ji_no', 'intval', 0);
+
         if (empty($bid) || empty($ji_no)) {
             $this->error('非法访问数据！', U('Book/index'));
         }
 
         //查询是否用户阅读
-        if (!M('rlog')->where(array('rid' => $bid, 'ji_no' => $ji_no, 'user_id' => $this->user['id'], 'type' => 'xs'))->find()) {
-            M('rlog')->add(array(
-                "rid"     => $bid,
-                "user_id" => $this->user['id'],
-                "ji_no"   => $ji_no,
-                "type"    => 'xs',
-            ));
-            M('book_episodes')->where(array('bid' => $bid, 'ji_no' => $ji_no))->setInc('readnums', 1);
-        }
+//        if (!M('rlog')->where(array('rid' => $bid, 'ji_no' => $ji_no, 'user_id' => $this->user['id'], 'type' => 'xs'))->find()) {
+//            M('rlog')->add(array(
+//                "rid"     => $bid,
+//                "user_id" => $this->user['id'],
+//                "ji_no"   => $ji_no,
+//                "type"    => 'xs',
+//            ));
+//            M('book_episodes')->where(array('bid' => $bid, 'ji_no' => $ji_no))->setInc('readnums', 1);
+//        }
 
         $binfo = M('book')->where("id={$bid}")->find();
 
@@ -217,6 +222,7 @@ class BookController extends HomeController
                 'type'        => 'xs',
                 'create_time' => NOW_TIME,
             ));
+            M('book_episodes')->where(array('bid' => $bid, 'ji_no' => $ji_no))->setInc('readnums', 1);
         } else {
             M('read')->where(array(
                 "rid"      => $binfo['id'],
@@ -621,7 +627,7 @@ class BookController extends HomeController
                         $money = $this->_site['mhmoney'];
                     }
 //                    $money = intval($money);
-                    $read  = M('read')->where(array('episodes' => $i, 'rid' => $id, 'user_id' => $this->user['id'], 'type' => $type))->find();
+                    $read = M('read')->where(array('episodes' => $i, 'rid' => $id, 'user_id' => $this->user['id'], 'type' => $type))->find();
 
                     $buy_whole = M('buy_order as bo')
                         ->field('bd.*')
@@ -674,7 +680,7 @@ class BookController extends HomeController
                         $money = $this->_site['xsmoney'];
                     }
 //                    $money = intval($money);
-                    $read  = M('read')->where(array('episodes' => $i, 'rid' => $id, 'user_id' => $this->user['id'], "type" => $type))->find();
+                    $read = M('read')->where(array('episodes' => $i, 'rid' => $id, 'user_id' => $this->user['id'], "type" => $type))->find();
 
 
                     $buy_whole = M('buy_order as bo')

@@ -11,7 +11,7 @@ class MemberController extends AdminController
     {
         $list = $this->_get_list('member');
         foreach ($list as $k => $v) {
-            $list[$k]['wcount'] = M('m_withdraw')->where(array('mid' => $v['id'], 'status' => array('lt', 2)))->count();
+            $list[$k]['wcount'] = M('m_withdraw')->where(array('mid' => $v['id'], 'status' => 1))->count();
         }
         $this->assign('list', $list);
         $this->assign('page', $this->data['page']);

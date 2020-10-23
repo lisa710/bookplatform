@@ -407,7 +407,11 @@ class MhController extends HomeController
             $this->error('非法访问漫画数据！', U('Mh/index'));
         }
 
-        $info = M('mh_list')->where("id={$mhid}")->find();
+        $info = M('mh_list as m')->field('m.*,me.name as member_name')
+            ->join('vv_member as me on me.id = m.member_id', 'left')
+            ->where("m.id={$mhid}")
+            ->find();
+
         if (empty($info)) {
             $this->error('漫画数据缺失！', U('Mh/index'));
         }
@@ -489,23 +493,23 @@ class MhController extends HomeController
      */
     public function inforedit()
     {
-        $mhid  = I('mhid', 'intval', 0);
-        $ji_no = I('ji_no', 'intval', 0);
+        $mhid          = I('mhid', 'intval', 0);
+        $ji_no         = I('ji_no', 'intval', 0);
 
         if (empty($mhid) || empty($ji_no)) {
             $this->error('非法访问漫画数据！', U('Mh/index'));
         }
 
         //查询是否用户阅读
-        if (!M('rlog')->where(array('rid' => $mhid, 'ji_no' => $ji_no, 'user_id' => $this->user['id'], 'type' => 'mh'))->find()) {
-            M('rlog')->add(array(
-                "rid"     => $mhid,
-                "user_id" => $this->user['id'],
-                "ji_no"   => $ji_no,
-                "type"    => 'mh',
-            ));
-            M('mh_episodes')->where(array('mhid' => $mhid, 'ji_no' => $ji_no))->setInc('readnums', 1);
-        }
+//        if (!M('rlog')->where(array('rid' => $mhid, 'ji_no' => $ji_no, 'user_id' => $this->user['id'], 'type' => 'mh'))->find()) {
+//            M('rlog')->add(array(
+//                "rid"     => $mhid,
+//                "user_id" => $this->user['id'],
+//                "ji_no"   => $ji_no,
+//                "type"    => 'mh',
+//            ));
+//            M('mh_episodes')->where(array('mhid' => $mhid, 'ji_no' => $ji_no))->setInc('readnums', 1);
+//        }
 
         $mhinfo = M('mh_list')->where("id={$mhid}")->find();
 
@@ -580,6 +584,7 @@ class MhController extends HomeController
                 'create_time' => NOW_TIME,
                 'type'        => 'mh',
             ));
+            M('mh_episodes')->where(array('mhid' => $mhid, 'ji_no' => $ji_no))->setInc('readnums', 1);
         } else {
             M('read')->where(array(
                 "rid"      => $mhid,
@@ -849,9 +854,23 @@ class MhController extends HomeController
     {
         $type = $_REQUEST['type'];
         if ($type == 'mh') {
-            $info = M('mh_list')->where("id={$_REQUEST['rid']}")->find();
+            $info = M('mh_list as m')->field('m.*,mep.money,me.name as member_name')
+                ->join('vv_member as me on me.id = m.member_id', 'left')
+                ->join("vv_mh_episodes as mep on mep.mhid = m.id and mep.ji_no = {$_REQUEST['ji_no']}", 'left')
+                ->where("m.id={$_REQUEST['rid']}")
+                ->find();
+            if(!$info['money'] || $info['money']<=0){
+                $info['money'] = $this->_site['mhmoney'];
+            }
         } else {
-            $info = M('book')->where("id={$_REQUEST['rid']}")->find();
+            $info = M('book as b')->field('b.*,be.money,me.name as member_name')
+                ->join('vv_member as me on me.id = b.member_id', 'left')
+                ->join("vv_book_episodes as be on be.bid = b.id and be.ji_no = {$_REQUEST['ji_no']}", 'left')
+                ->where("b.id={$_REQUEST['rid']}")
+                ->find();
+            if(!$info['money'] || $info['money']<=0){
+                $info['money'] = $this->_site['xsmoney'];
+            }
         }
 
         $arr_catename = array();
@@ -864,11 +883,12 @@ class MhController extends HomeController
         }
 
         $asdata = array(
-            'type'         => $type,
-            'info'         => $info,
-            'rid'          => $_REQUEST['rid'],
-            'current_ji'   => $_REQUEST['ji_no'],
-            'arr_catename' => $arr_catename,
+            'type'          => $type,
+            'info'          => $info,
+            'rid'           => $_REQUEST['rid'],
+            'current_ji'    => $_REQUEST['ji_no'],
+            'current_money' => $info['money'],
+            'arr_catename'  => $arr_catename,
         );
 
         $this->assign($asdata);
@@ -887,6 +907,11 @@ class MhController extends HomeController
         $order_num = $this->user['id'] . date('Ymdhis') . rand(10000, 99999);
 
         $sale_money = 0;//售卖价格
+
+        $is_buy = M('buy_order')
+            ->where(['user_id' => $this->user['id'], 'book_type' => $type, 'rid' => $rid])
+            ->select();
+
         switch ($buy_type) {
             case 1://购买当前章节
                 $buy_detail = M('buy_order as bo')
@@ -901,7 +926,7 @@ class MhController extends HomeController
 
                 if ($type == 'mh') {
                     $info = M('mh_list as m')->field('m.member_id,me.*')
-                        ->join('vv_mh_episodes me ON me.bid = m.id', 'left')
+                        ->join('vv_mh_episodes me ON me.mhid = m.id', 'left')
                         ->where("m.id = {$rid} AND me.ji_no = {$current}")
                         ->find();
                 } else {
@@ -943,15 +968,9 @@ class MhController extends HomeController
                     $this->error('您的购买中存在重复章节，请从第' . ($buy_detail['episodes'] + 1) . '章开始购买');
                 }
 
-//                if ($type == 'mh') {
-//                    $info = M('mh_episodes')->where("mhid = {$rid} AND ji_no <= {$ji_end} AND ji_no >= $ji_start")->select();
-//                } else {
-//                    $info = M('book_episodes')->where("bid = {$rid} AND ji_no <= {$ji_end} AND ji_no >= $ji_start")->select();
-//                }
-
                 if ($type == 'mh') {
                     $info = M('mh_list as m')->field('m.member_id,me.*')
-                        ->join('vv_mh_episodes me ON me.bid = m.id', 'left')
+                        ->join('vv_mh_episodes me ON me.mhid = m.id', 'left')
                         ->where("m.id = {$rid} AND me.ji_no <= {$ji_end} AND me.ji_no >= $ji_start")
                         ->select();
                 } else {
@@ -1016,8 +1035,16 @@ class MhController extends HomeController
 
         if ($type == 'mh') {
             $member_info = M('mh_list')->field('member_id')->where(['id' => $rid])->find();
+            M('mh_list')->where(array('id' => $rid))->setInc('chargemoney', $sale_money);
+            if (empty($is_buy)) {
+                M('mh_list')->where(array('id' => $rid))->setInc('chargenum', 1);
+            }
         } else {
             $member_info = M('book')->field('member_id')->where(['id' => $rid])->find();
+            M('book')->where(array('id' => $rid))->setInc('chargemoney', $sale_money);
+            if (empty($is_buy)) {
+                M('book')->where(array('id' => $rid))->setInc('chargenum', 1);
+            }
         }
         M('member')->where(['id' => $member_info['member_id']])->setInc('sale_money', $sale_money);
         $this->success('购买成功');

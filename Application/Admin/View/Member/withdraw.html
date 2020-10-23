@@ -58,13 +58,15 @@
 						<td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
 						<td>{$vo.money}</td>
 						<td>{$vo.zfb}</td>
-						<td>{$vo.status|get_withdraw_status}</td>
+						<td>{$vo.status|get_m_withdraw_status}</td>
 						<td class="center">
 							<if condition="$vo['status'] eq 1">
 								<a href="{:U('audit?id='.$vo['id'])}">提现成功</a> |
 								<a href="{:U('refuse?id='.$vo['id'])}">拒绝提现</a>
-							<else />
+							<elseif condition="$vo['status'] eq 2" />
 								结算完成
+								<else />
+								拒绝提现
 							</if>
 						</td>
 					</volist>
